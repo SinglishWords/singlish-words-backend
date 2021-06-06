@@ -1,0 +1,50 @@
+basePath: /v2
+host: petstore.swagger.io
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Singlish words API document
+  version: "1.0"
+paths:
+  /api/v1/questions:
+    get:
+      description: Get a list of questions
+      parameters:
+      - description: Will return limit number of questions.
+        enum:
+        - A
+        - B
+        - C
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: answer
+          schema:
+            type: string
+        "400":
+          description: ok
+          schema:
+            type: string
+        "404":
+          description: ok
+          schema:
+            type: string
+        "500":
+          description: ok
+          schema:
+            type: string
+      summary: Get a list of questions
+      tags:
+      - Questions
+swagger: "2.0"
