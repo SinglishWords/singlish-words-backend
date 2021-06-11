@@ -1,5 +1,103 @@
-basePath: /v2
-host: petstore.swagger.io
+definitions:
+  answer.paramPostSingleAnswer:
+    properties:
+      association1:
+        type: string
+      association2:
+        type: string
+      association3:
+        type: string
+      questionId:
+        type: integer
+      respondentId:
+        type: integer
+      timeSpend:
+        type: integer
+    type: object
+  apiv1.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      msg:
+        type: string
+    type: object
+  model.Answer:
+    properties:
+      association1:
+        type: string
+      association2:
+        type: string
+      association3:
+        type: string
+      id:
+        type: integer
+      questionId:
+        type: integer
+      respondentId:
+        type: integer
+      timeSpend:
+        type: integer
+    type: object
+  model.Question:
+    properties:
+      id:
+        type: integer
+      word:
+        type: string
+    type: object
+  model.Respondent:
+    properties:
+      age:
+        type: integer
+      countryOfBirth:
+        type: string
+      countryOfResidence:
+        type: string
+      education:
+        type: string
+      email:
+        type: string
+      endTime:
+        type: string
+      ethnicity:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      isNative:
+        type: string
+      languagesSpoken:
+        type: string
+      startTime:
+        type: string
+    type: object
+  respondent.postRespondentBody:
+    properties:
+      age:
+        type: integer
+      countryOfBirth:
+        type: string
+      countryOfResidence:
+        type: string
+      education:
+        type: string
+      email:
+        type: string
+      endTime:
+        type: string
+      ethnicity:
+        type: string
+      gender:
+        type: string
+      isNative:
+        type: string
+      languagesSpoken:
+        type: string
+      startTime:
+        type: string
+    type: object
+host: localhost:8080
 info:
   contact:
     email: support@swagger.io
@@ -13,38 +111,116 @@ info:
   title: Singlish words API document
   version: "1.0"
 paths:
-  /api/v1/questions:
+  /api/v1/answer:
+    get:
+      parameters:
+      - description: default=10000
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Answer'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Get all answers
+      tags:
+      - Answer
+    post:
+      parameters:
+      - description: answer with 3 associations
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/answer.paramPostSingleAnswer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Answer'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Post an answer
+      tags:
+      - Answer
+  /api/v1/question:
     get:
       description: Get a list of questions
       parameters:
-      - description: Will return limit number of questions.
-        enum:
-        - A
-        - B
-        - C
+      - description: Will return limit number of questions, default=8
         in: query
         name: limit
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: answer
+          description: OK
           schema:
-            type: string
-        "400":
-          description: ok
-          schema:
-            type: string
-        "404":
-          description: ok
-          schema:
-            type: string
+            items:
+              $ref: '#/definitions/model.Question'
+            type: array
         "500":
-          description: ok
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/apiv1.ErrorResponse'
       summary: Get a list of questions
       tags:
       - Questions
+  /api/v1/respondent:
+    get:
+      parameters:
+      - description: default=10000
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Respondent'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Get all respondents
+      tags:
+      - Respondent
+    post:
+      parameters:
+      - description: respondent information
+        in: body
+        name: respondent
+        required: true
+        schema:
+          $ref: '#/definitions/respondent.postRespondentBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Respondent'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Post a respondent information
+      tags:
+      - Respondent
 swagger: "2.0"

@@ -33,7 +33,74 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/questions": {
+        "/api/v1/answer": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Get all answers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "default=10000",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Answer"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Post an answer",
+                "parameters": [
+                    {
+                        "description": "answer with 3 associations",
+                        "name": "answer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/answer.paramPostSingleAnswer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Answer"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/question": {
             "get": {
                 "description": "Get a list of questions",
                 "produces": [
@@ -45,42 +112,250 @@ var doc = `{
                 "summary": "Get a list of questions",
                 "parameters": [
                     {
-                        "enum": [
-                            "A",
-                            "B",
-                            "C"
-                        ],
-                        "type": "string",
-                        "description": "Will return limit number of questions.",
+                        "type": "integer",
+                        "description": "Will return limit number of questions, default=8",
                         "name": "limit",
                         "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "answer",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Question"
+                            }
                         }
                     },
                     "500": {
-                        "description": "ok",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
                         }
                     }
+                }
+            }
+        },
+        "/api/v1/respondent": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Respondent"
+                ],
+                "summary": "Get all respondents",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "default=10000",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Respondent"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Respondent"
+                ],
+                "summary": "Post a respondent information",
+                "parameters": [
+                    {
+                        "description": "respondent information",
+                        "name": "respondent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/respondent.postRespondentBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Respondent"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "answer.paramPostSingleAnswer": {
+            "type": "object",
+            "properties": {
+                "association1": {
+                    "type": "string"
+                },
+                "association2": {
+                    "type": "string"
+                },
+                "association3": {
+                    "type": "string"
+                },
+                "questionId": {
+                    "type": "integer"
+                },
+                "respondentId": {
+                    "type": "integer"
+                },
+                "timeSpend": {
+                    "type": "integer"
+                }
+            }
+        },
+        "apiv1.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Answer": {
+            "type": "object",
+            "properties": {
+                "association1": {
+                    "type": "string"
+                },
+                "association2": {
+                    "type": "string"
+                },
+                "association3": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "questionId": {
+                    "type": "integer"
+                },
+                "respondentId": {
+                    "type": "integer"
+                },
+                "timeSpend": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Question": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "word": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Respondent": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "countryOfBirth": {
+                    "type": "string"
+                },
+                "countryOfResidence": {
+                    "type": "string"
+                },
+                "education": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "ethnicity": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isNative": {
+                    "type": "string"
+                },
+                "languagesSpoken": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "respondent.postRespondentBody": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "countryOfBirth": {
+                    "type": "string"
+                },
+                "countryOfResidence": {
+                    "type": "string"
+                },
+                "education": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "ethnicity": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "isNative": {
+                    "type": "string"
+                },
+                "languagesSpoken": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
                 }
             }
         }
@@ -99,8 +374,8 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "petstore.swagger.io",
-	BasePath:    "/v2",
+	Host:        "localhost:8080",
+	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "Singlish words API document",
 	Description: "This is a sample server Petstore server.",
