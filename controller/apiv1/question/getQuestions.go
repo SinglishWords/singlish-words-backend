@@ -20,7 +20,7 @@ import (
 // @Param limit query int false "Will return limit number of questions, default=8"
 // @Success 200 {object} []model.Question
 // @Failure 500 {object} apiv1.ErrorResponse
-// @Router /api/v1/question [get]
+// @Router /question [get]
 func GetQuestions(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	code := apiv1.StatusOK
 

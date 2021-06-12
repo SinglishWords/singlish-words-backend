@@ -15,6 +15,9 @@ const (
 type RespondentDAO struct{}
 
 func (RespondentDAO) Save(respondent *model.Respondent) error {
+	if db == nil {
+		return notConnectedError{}
+	}
 	result, err := db.NamedExec(sqlInsertRespondent, respondent)
 	if err != nil {
 		return err
@@ -29,13 +32,19 @@ func (RespondentDAO) Save(respondent *model.Respondent) error {
 	return nil
 }
 
-func (RespondentDAO) GetById(id int64) (model.Respondent, error) {
+func (RespondentDAO) GetById(id int64) (*model.Respondent, error) {
+	if db == nil {
+		return nil, notConnectedError{}
+	}
 	var respondent model.Respondent
 	err := db.Get(&respondent, sqlGetRespondentById, id)
-	return respondent, err
+	return &respondent, err
 }
 
 func (RespondentDAO) GetAll() ([]model.Respondent, error) {
+	if db == nil {
+		return nil, notConnectedError{}
+	}
 	var respondents []model.Respondent
 	err := db.Select(&respondents, sqlGetAllRespondents)
 	return respondents, err

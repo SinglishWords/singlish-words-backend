@@ -1,3 +1,6 @@
+app:
+  addr: :8080
+  mode: release
 mysql:
   host: localhost:3306
   user: csqsiew
@@ -9,3 +12,6 @@ redis:
   host: localhost:6379
   password:
   db: 0
+swagger:
+  enable: true
+  path: /_/swagger/*any

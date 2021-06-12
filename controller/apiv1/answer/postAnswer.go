@@ -36,7 +36,7 @@ func (p *paramPostSingleAnswer) ToAnswer() *model.Answer {
 // @Param answer body paramPostSingleAnswer true "answer with 3 associations"
 // @Success 201 {object} model.Answer
 // @Failure 500 {object} apiv1.ErrorResponse
-// @Router /api/v1/answer [post]
+// @Router /answer [post]
 func PostAnswer(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	var param paramPostSingleAnswer
 	err := c.BindJSON(&param)

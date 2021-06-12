@@ -13,6 +13,14 @@ var Redis struct {
 	Password string
 	DB       int
 }
+var Swagger struct {
+	Enable bool
+	Path   string
+}
+var App struct {
+	Addr string
+	Mode string
+}
 
 func readMySqlConfig(viper *viper.Viper) error {
 	conn := viper.GetStringMapString("mysql")
@@ -21,8 +29,6 @@ func readMySqlConfig(viper *viper.Viper) error {
 	password := conn["password"]
 	host := conn["host"]
 	dbname := conn["dbname"]
-
-	fmt.Printf("%s:%s@tcp(%s)/%s", user, password, host, dbname)
 
 	if user == "" || password == "" || host == "" || dbname == "" {
 		return fmt.Errorf("short of user, password, host, dbname parameters")
@@ -37,10 +43,22 @@ func readRedisConfig(viper *viper.Viper) error {
 	return viper.UnmarshalKey("redis", &Redis)
 }
 
+func readSwaggerConfig(viper *viper.Viper) error {
+	Swagger.Enable = true
+	Swagger.Path = "/_/_swagger/*"
+	return viper.UnmarshalKey("swagger", &Swagger)
+}
+
+func readAppConfig(viper *viper.Viper) error {
+	App.Addr = "8080"
+	App.Mode = "release"
+	return viper.UnmarshalKey("app", &App)
+}
+
 func init() {
 	viper := viper.New()
 
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 
@@ -50,10 +68,18 @@ func init() {
 
 	err := readMySqlConfig(viper)
 	if err != nil {
-		panic("Config of mysql is wrong." + err.Error())
+		panic("Config of mysql is wrong: " + err.Error())
 	}
 	err = readRedisConfig(viper)
 	if err != nil {
-		panic("Config of redis is wrong." + err.Error())
+		panic("Config of redis is wrong: " + err.Error())
+	}
+	err = readSwaggerConfig(viper)
+	if err != nil {
+		panic("Config of swagger is wrong: " + err.Error())
+	}
+	err = readAppConfig(viper)
+	if err != nil {
+		panic("Config of app is wrong: " + err.Error())
 	}
 }

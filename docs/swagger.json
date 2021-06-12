@@ -16,8 +16,9 @@
         "version": "1.0"
     },
     "host": "localhost:8080",
+    "basePath": "/api/v1",
     "paths": {
-        "/api/v1/answer": {
+        "/answer": {
             "get": {
                 "produces": [
                     "application/json"
@@ -38,7 +39,10 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.Answer"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Answer"
+                            }
                         }
                     },
                     "500": {
@@ -84,7 +88,7 @@
                 }
             }
         },
-        "/api/v1/question": {
+        "/question": {
             "get": {
                 "description": "Get a list of questions",
                 "produces": [
@@ -121,7 +125,7 @@
                 }
             }
         },
-        "/api/v1/respondent": {
+        "/respondent": {
             "get": {
                 "produces": [
                     "application/json"

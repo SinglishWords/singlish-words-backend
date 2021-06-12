@@ -6,17 +6,9 @@ import (
 	"singlishwords/controller/apiv1/answer"
 	"singlishwords/controller/apiv1/question"
 	"singlishwords/controller/apiv1/respondent"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-var router *gin.Engine
-
-func init() {
-	g := gin.Default()
-
-	g.GET("/swagger/*any", ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "NAME_OF_ENV_VARIABLE"))
+func InitRouter(g *gin.Engine) *gin.Engine {
 
 	v1 := g.Group("/api/v1")
 	{
@@ -33,11 +25,7 @@ func init() {
 		v1.GET("/respondent", responseWrapper(respondent.GetRespondent))
 	}
 
-	router = g
-}
-
-func GetRouter() *gin.Engine {
-	return router
+	return g
 }
 
 func responseWrapper(f func(*gin.Context) (apiv1.HttpStatus, interface{})) gin.HandlerFunc {

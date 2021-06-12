@@ -16,7 +16,7 @@ import (
 // @Param respondent body postRespondentBody true "respondent information"
 // @Success 201 {object} model.Respondent
 // @Failure 500 {object} apiv1.ErrorResponse
-// @Router /api/v1/respondent [post]
+// @Router /respondent [post]
 func PostRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	code := apiv1.StatusOK
 	rb := postRespondentBody{}

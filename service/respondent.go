@@ -16,6 +16,6 @@ func GetAllRespondents() ([]model.Respondent, error) {
 	return respondentDAO.GetAll()
 }
 
-func GetRespondentById(id int64) (model.Respondent, error) {
+func GetRespondentById(id int64) (*model.Respondent, error) {
 	return respondentDAO.GetById(id)
 }

@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   answer.paramPostSingleAnswer:
     properties:
@@ -111,7 +112,7 @@ info:
   title: Singlish words API document
   version: "1.0"
 paths:
-  /api/v1/answer:
+  /answer:
     get:
       parameters:
       - description: default=10000
@@ -124,7 +125,9 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/model.Answer'
+            items:
+              $ref: '#/definitions/model.Answer'
+            type: array
         "500":
           description: Internal Server Error
           schema:
@@ -154,7 +157,7 @@ paths:
       summary: Post an answer
       tags:
       - Answer
-  /api/v1/question:
+  /question:
     get:
       description: Get a list of questions
       parameters:
@@ -178,7 +181,7 @@ paths:
       summary: Get a list of questions
       tags:
       - Questions
-  /api/v1/respondent:
+  /respondent:
     get:
       parameters:
       - description: default=10000

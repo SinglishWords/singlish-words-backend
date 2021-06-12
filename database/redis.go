@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"singlishwords/config"
@@ -16,6 +17,9 @@ func init() {
 	})
 }
 
-func GetRedisDB() *redis.Client {
-	return rdb
+func GetRedisDB() (*redis.Client, error) {
+	if rdb != nil {
+		return rdb, nil
+	}
+	return nil, fmt.Errorf("not connected to redis database")
 }

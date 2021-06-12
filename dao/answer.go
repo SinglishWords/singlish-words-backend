@@ -15,6 +15,9 @@ const (
 type AnswerDAO struct{}
 
 func (o AnswerDAO) GetAll() ([]model.Answer, error) {
+	if db == nil {
+		return nil, notConnectedError{}
+	}
 	var answers []model.Answer
 	err := db.Select(&answers, sqlGetAllAnswers)
 	if err != nil {
@@ -24,6 +27,9 @@ func (o AnswerDAO) GetAll() ([]model.Answer, error) {
 }
 
 func (o AnswerDAO) Save(answer *model.Answer) error {
+	if db == nil {
+		return notConnectedError{}
+	}
 	result, err := db.NamedExec(sqlSaveAnswer, answer)
 	if err != nil {
 		return err
@@ -34,6 +40,9 @@ func (o AnswerDAO) Save(answer *model.Answer) error {
 }
 
 func (o AnswerDAO) SaveAll(answers []model.Answer) error {
+	if db == nil {
+		return notConnectedError{}
+	}
 	_, err := db.NamedExec(sqlSaveAnswer, answers)
 	return err
 }

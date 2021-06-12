@@ -33,6 +33,9 @@ func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, err
 }
 
 func (QuestionCache) storeAllToRedis(questions []model.Question) error {
+	if rdb == nil {
+		return notConnectedError{}
+	}
 	pipe := rdb.Pipeline()
 	for _, question := range questions {
 		pipe.SAdd("question", question)
@@ -47,6 +50,9 @@ func (QuestionCache) storeAllToRedis(questions []model.Question) error {
 }
 
 func (QuestionCache) getNRandomQuestionsFromRedis(limit int) ([]model.Question, error) {
+	if rdb == nil {
+		return nil, notConnectedError{}
+	}
 	results, err := rdb.SRandMemberN("question", int64(limit)).Result()
 	if err != nil || len(results) == 0 {
 		return nil, cacheMissError{}

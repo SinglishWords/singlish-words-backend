@@ -13,6 +13,9 @@ const (
 type QuestionDAO struct{}
 
 func (o QuestionDAO) GetAll() ([]model.Question, error) {
+	if db == nil {
+		return nil, notConnectedError{}
+	}
 	var questions []model.Question
 	err := db.Select(&questions, sqlGetAllQuestions)
 	if err != nil {
@@ -22,6 +25,9 @@ func (o QuestionDAO) GetAll() ([]model.Question, error) {
 }
 
 func (o QuestionDAO) Save(question *model.Question) error {
+	if db == nil {
+		return notConnectedError{}
+	}
 	result, err := db.NamedExec(sqlSaveQuestion, question)
 	if err != nil {
 		return err
@@ -31,8 +37,11 @@ func (o QuestionDAO) Save(question *model.Question) error {
 	return err
 }
 
-func (o QuestionDAO) GetById(id int64) (model.Question, error) {
+func (o QuestionDAO) GetById(id int64) (*model.Question, error) {
+	if db == nil {
+		return nil, notConnectedError{}
+	}
 	var question model.Question
 	err := db.Get(&question, sqlGetQuestionById, id)
-	return question, err
+	return &question, err
 }

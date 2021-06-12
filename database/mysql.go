@@ -4,21 +4,30 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"log"
 	"singlishwords/config"
 )
 
 var db *sqlx.DB
 
 func init() {
-	//dsn := "csqsiew:123456@tcp(localhost:3306)/singlishwords?parseTime=True"
 	dsn := config.MySqlDSN
-	fmt.Println(dsn)
-	db = sqlx.MustConnect("mysql", dsn)
+	var err error
+	db, err = sqlx.Connect("mysql", dsn)
 
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(100)
+	if err != nil {
+		db = nil
+		log.Default().Println("Cannot connect to Mysql database. Check your config files.")
+		return
+	}
+
+	//db.SetMaxIdleConns(10)
+	//db.SetMaxOpenConns(100)
 }
 
-func GetMySQLDB() *sqlx.DB {
-	return db
+func GetMySQLDB() (*sqlx.DB, error) {
+	if db != nil {
+		return db, nil
+	}
+	return nil, fmt.Errorf("not connected to mysql database")
 }

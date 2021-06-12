@@ -33,7 +33,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/answer": {
+        "/answer": {
             "get": {
                 "produces": [
                     "application/json"
@@ -54,7 +54,10 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.Answer"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Answer"
+                            }
                         }
                     },
                     "500": {
@@ -100,7 +103,7 @@ var doc = `{
                 }
             }
         },
-        "/api/v1/question": {
+        "/question": {
             "get": {
                 "description": "Get a list of questions",
                 "produces": [
@@ -137,7 +140,7 @@ var doc = `{
                 }
             }
         },
-        "/api/v1/respondent": {
+        "/respondent": {
             "get": {
                 "produces": [
                     "application/json"
@@ -375,7 +378,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "localhost:8080",
-	BasePath:    "",
+	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "Singlish words API document",
 	Description: "This is a sample server Petstore server.",
