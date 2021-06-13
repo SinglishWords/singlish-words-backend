@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"log"
+	"singlishwords/log"
 	"singlishwords/model"
 )
 
@@ -62,9 +62,9 @@ func (RespondentDAO) AddRespondentWithAnswers(r *model.Respondent, as []model.An
 	result, err := tx.NamedExec(sqlInsertRespondent, r)
 	if err != nil {
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
-			log.Printf("insert respondent failed: %v, unable to back: %v, the respondent: %+v", err, rollbackErr, r)
+			log.Logger.Errorf("insert respondent failed: %v, unable to back: %v, the respondent: %+v", err, rollbackErr, r)
 		}
-		log.Println(err.Error())
+		log.Logger.Warn(err)
 		return nil, insertError{}
 	}
 
@@ -74,16 +74,17 @@ func (RespondentDAO) AddRespondentWithAnswers(r *model.Respondent, as []model.An
 		a.RespondentId = rid
 		result, err = tx.NamedExec(sqlInsertAnswer, a)
 		if err != nil {
-			log.Printf("insert answer failed: %v, the answer: %+v", err, a)
+			log.Logger.Warnf("insert answer failed: %v, the answer: %+v", err, a)
 		}
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		log.Printf("insert respondent with answers together failed. The respondent: %v, the answers: %v", r, as)
+		log.Logger.Warnf("insert respondent with answers together failed. The respondent: %v, the answers: %v", r, as)
 		return nil, err
 	}
 
 	r.Id = rid
+	log.Logger.Infof("Saved respondent with %d answers together. The respondent: %v, the answers: %v", len(as), r, as)
 	return r, nil
 }

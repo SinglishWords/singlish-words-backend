@@ -7,10 +7,11 @@ import (
 	"singlishwords/controller/apiv1/answer"
 	"singlishwords/controller/apiv1/question"
 	"singlishwords/controller/apiv1/respondent"
+	"singlishwords/log"
 )
 
 func InitRouter(g *gin.Engine) *gin.Engine {
-
+	g.Use(log.RouteLogger())
 	v1 := g.Group(config.App.BaseURL)
 	{
 		// Question

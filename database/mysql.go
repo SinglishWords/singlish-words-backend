@@ -4,8 +4,8 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"log"
 	"singlishwords/config"
+	"singlishwords/log"
 )
 
 var db *sqlx.DB
@@ -17,10 +17,11 @@ func init() {
 
 	if err != nil {
 		db = nil
-		log.Default().Println("Cannot connect to Mysql database. Check your config files.")
+		log.Logger.Error("Cannot connect to Mysql database. Check your config files.")
 		return
 	}
 
+	log.Logger.Info("Connect to mysql successful.")
 	//db.SetMaxIdleConns(10)
 	//db.SetMaxOpenConns(100)
 }

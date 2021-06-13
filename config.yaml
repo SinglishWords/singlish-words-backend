@@ -1,6 +1,6 @@
 app:
   addr: :8080
-  mode: debug #release
+  mode: release
   baseurl: /
 mysql: #just template, will change when
   host: localhost:3306
@@ -16,3 +16,8 @@ redis:
 swagger:
   enable: true
   path: /_/swagger/*any
+log:
+#  route: stdout #/var/local/log/singlishwords/routes.log
+#  info: stdout #/var/local/log/singlishwords/info.log
+  route: /var/log/singlishwords/route.log
+  info: /var/log/singlishwords/info.log

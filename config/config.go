@@ -22,6 +22,11 @@ var App struct {
 	Mode    string
 	BaseURL string
 }
+var Log struct {
+	Info  string `json:"info"`
+	Route string `json:"route"`
+	Error string `json:"error"`
+}
 
 func readMySqlConfig(viper *viper.Viper) error {
 	conn := viper.GetStringMapString("mysql")
@@ -57,6 +62,12 @@ func readAppConfig(viper *viper.Viper) error {
 	return viper.UnmarshalKey("app", &App)
 }
 
+func readLogConfig(viper *viper.Viper) error {
+	Log.Info = "stdout"
+	Log.Route = "stdout"
+	return viper.UnmarshalKey("log", &Log)
+}
+
 func init() {
 	viper := viper.New()
 
@@ -86,5 +97,9 @@ func init() {
 	err = readAppConfig(viper)
 	if err != nil {
 		panic("Config of app is wrong: " + err.Error())
+	}
+	err = readLogConfig(viper)
+	if err != nil {
+		panic("Config of log is wrong: " + err.Error())
 	}
 }

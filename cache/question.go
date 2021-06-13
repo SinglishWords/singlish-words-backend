@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"singlishwords/dao"
+	"singlishwords/log"
 	"singlishwords/model"
 	"strings"
 )
@@ -18,14 +19,17 @@ func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, err
 		return questions, nil
 	}
 
+	log.Logger.Warn("Cache get random questions, miss!")
 	// cache miss...
 	questions, err = questionDAO.GetAll()
 	if err != nil {
+		log.Logger.Error("Mysql get random questions fail.")
 		return nil, err
 	}
 
 	err = cache.storeAllToRedis(questions)
 	if err != nil {
+		log.Logger.Warn("Store to redis cache error.")
 		return nil, err
 	}
 

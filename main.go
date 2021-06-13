@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"singlishwords/config"
+	"singlishwords/log"
 	"singlishwords/router"
 	"syscall"
 	"time"
@@ -34,7 +35,9 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	g := gin.Default()
+	g := gin.New()
+	g.Use(log.RouteLogger())
+	g.Use(gin.Recovery())
 
 	if config.Swagger.Enable {
 		g.GET(config.Swagger.Path, ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -61,7 +64,8 @@ func main() {
 	// it won't block the graceful shutdown handling below
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-			log.Printf("listen: %s\n", err)
+			fmt.Printf("listen: %s\n", err)
+			log.Logger.Infof("listen: %s\n", err)
 		}
 	}()
 
@@ -73,7 +77,9 @@ func main() {
 	// kill -9 is syscall.SIGKILL but can't be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("Shutting down server...")
+
+	fmt.Println("Shutting down server...")
+	log.Logger.Infof("Shutting down server...")
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
@@ -81,8 +87,10 @@ func main() {
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server forced to shutdown:", err)
+		fmt.Println("Server forced to shutdown:", err)
+		log.Logger.Info("Server forced to shutdown:", err)
 	}
 
-	log.Println("Server exiting")
+	fmt.Println("Server exiting")
+	log.Logger.Infof("Server exiting")
 }
