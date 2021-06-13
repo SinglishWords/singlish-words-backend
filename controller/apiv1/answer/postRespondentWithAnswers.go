@@ -49,12 +49,13 @@ type paramPostRespondentWithAnswers struct {
 	EndTime            time.Time `json:"endTime"`
 	Email              string    `json:"email"`
 	Answers            []struct {
-		QuestionId   int64  `json:"questionId"`
-		TimeSpend    int    `json:"timeSpend"`
-		Association1 string `json:"association1"`
-		Association2 string `json:"association2"`
-		Association3 string `json:"association3"`
-	} `json:"answers"`
+		Question struct {
+			Id   int64  `json:"id"`
+			Word string `json:"word"`
+		} `json:"question"`
+		Responses []string `json:"response"`
+		TimeSpend int      `json:"timeOnPage"`
+	} `json:"data"`
 }
 
 // ToModels
@@ -76,11 +77,11 @@ func (rb *paramPostRespondentWithAnswers) ToModels() (*model.Respondent, []model
 	answers := make([]model.Answer, len(rb.Answers))
 	for i, answer := range rb.Answers {
 		answers[i] = model.Answer{
-			Association1: answer.Association1,
-			Association2: answer.Association2,
-			Association3: answer.Association3,
+			Association1: answer.Responses[0],
+			Association2: answer.Responses[1],
+			Association3: answer.Responses[2],
 			TimeSpend:    time.Duration(answer.TimeSpend),
-			QuestionId:   answer.QuestionId,
+			QuestionId:   answer.Question.Id,
 		}
 	}
 	return r, answers

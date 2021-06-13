@@ -210,6 +210,37 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Respondent"
+                ],
+                "summary": "Patch emails",
+                "parameters": [
+                    {
+                        "description": "respondent information",
+                        "name": "respondent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/respondent.patchRespondentBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/respondents": {
@@ -256,34 +287,39 @@ var doc = `{
                 "age": {
                     "type": "integer"
                 },
-                "answers": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "association1": {
-                                "type": "string"
-                            },
-                            "association2": {
-                                "type": "string"
-                            },
-                            "association3": {
-                                "type": "string"
-                            },
-                            "questionId": {
-                                "type": "integer"
-                            },
-                            "timeSpend": {
-                                "type": "integer"
-                            }
-                        }
-                    }
-                },
                 "countryOfBirth": {
                     "type": "string"
                 },
                 "countryOfResidence": {
                     "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "question": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "word": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "response": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "timeOnPage": {
+                                "type": "integer"
+                            }
+                        }
+                    }
                 },
                 "education": {
                     "type": "string"
@@ -420,6 +456,17 @@ var doc = `{
                 },
                 "startTime": {
                     "type": "string"
+                }
+            }
+        },
+        "respondent.patchRespondentBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         },

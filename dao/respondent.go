@@ -12,8 +12,9 @@ const (
 			 ethnicity, is_native, language_spoken, start_time, end_time, email) 
 			 VALUES (:age, :gender, :education, :country_of_birth, :country_of_residence, 
 			 :ethnicity, :is_native, :language_spoken, :start_time, :end_time, :email);`
-	sqlGetAllRespondents = `SELECT * FROM respondent;`
-	sqlGetRespondentById = "SELECT * FROM respondent WHERE id=?;"
+	sqlGetAllRespondents     = `SELECT * FROM respondent;`
+	sqlGetRespondentById     = `SELECT * FROM respondent WHERE id=?;`
+	sqlUpdateRespondentEmail = `UPDATE respondent SET email=? WHERE id=?`
 )
 
 type RespondentDAO struct{}
@@ -55,6 +56,21 @@ func (RespondentDAO) GetAll() ([]model.Respondent, error) {
 	var respondents []model.Respondent
 	err = db.Select(&respondents, sqlGetAllRespondents)
 	return respondents, err
+}
+
+func (RespondentDAO) UpdateEmail(id int64, email string) error {
+	db, err := database.GetMySqlDB()
+	if db == nil {
+		return notConnectedError{}
+	}
+
+	_, err = db.Exec(sqlUpdateRespondentEmail, email, id)
+	if err != nil {
+		log.Logger.Warnf("Fail to update a user's email, user id: %v, email: %v", id, email)
+		return err
+	}
+	log.Logger.Infof("Successfully update a user's email, user id: %v, email: %v", id, email)
+	return err
 }
 
 func (RespondentDAO) AddRespondentWithAnswers(r *model.Respondent, as []model.Answer) (*model.Respondent, error) {

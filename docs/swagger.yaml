@@ -4,25 +4,28 @@ definitions:
     properties:
       age:
         type: integer
-      answers:
-        items:
-          properties:
-            association1:
-              type: string
-            association2:
-              type: string
-            association3:
-              type: string
-            questionId:
-              type: integer
-            timeSpend:
-              type: integer
-          type: object
-        type: array
       countryOfBirth:
         type: string
       countryOfResidence:
         type: string
+      data:
+        items:
+          properties:
+            question:
+              properties:
+                id:
+                  type: integer
+                word:
+                  type: string
+              type: object
+            response:
+              items:
+                type: string
+              type: array
+            timeOnPage:
+              type: integer
+          type: object
+        type: array
       education:
         type: string
       email:
@@ -112,6 +115,13 @@ definitions:
         type: string
       startTime:
         type: string
+    type: object
+  respondent.patchRespondentBody:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
     type: object
   respondent.postRespondentBody:
     properties:
@@ -245,6 +255,26 @@ paths:
       tags:
       - Questions
   /respondent:
+    patch:
+      parameters:
+      - description: respondent information
+        in: body
+        name: respondent
+        required: true
+        schema:
+          $ref: '#/definitions/respondent.patchRespondentBody'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Patch emails
+      tags:
+      - Respondent
     post:
       parameters:
       - description: respondent information
