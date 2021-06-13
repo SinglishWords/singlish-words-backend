@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"singlishwords/database"
 	"singlishwords/log"
 	"singlishwords/model"
 )
@@ -18,6 +19,7 @@ const (
 type RespondentDAO struct{}
 
 func (RespondentDAO) Save(respondent *model.Respondent) error {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		return notConnectedError{}
 	}
@@ -36,24 +38,27 @@ func (RespondentDAO) Save(respondent *model.Respondent) error {
 }
 
 func (RespondentDAO) GetById(id int64) (*model.Respondent, error) {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		return nil, notConnectedError{}
 	}
 	var respondent model.Respondent
-	err := db.Get(&respondent, sqlGetRespondentById, id)
+	err = db.Get(&respondent, sqlGetRespondentById, id)
 	return &respondent, err
 }
 
 func (RespondentDAO) GetAll() ([]model.Respondent, error) {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		return nil, notConnectedError{}
 	}
 	var respondents []model.Respondent
-	err := db.Select(&respondents, sqlGetAllRespondents)
+	err = db.Select(&respondents, sqlGetAllRespondents)
 	return respondents, err
 }
 
 func (RespondentDAO) AddRespondentWithAnswers(r *model.Respondent, as []model.Answer) (*model.Respondent, error) {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		return nil, notConnectedError{}
 	}

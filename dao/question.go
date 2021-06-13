@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"singlishwords/database"
 	"singlishwords/log"
 	"singlishwords/model"
 )
@@ -14,12 +15,13 @@ const (
 type QuestionDAO struct{}
 
 func (o QuestionDAO) GetAll() ([]model.Question, error) {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 	var questions []model.Question
-	err := db.Select(&questions, sqlGetAllQuestions)
+	err = db.Select(&questions, sqlGetAllQuestions)
 	if err != nil {
 		log.Logger.Warn("Error when select all questions", err)
 		return questions, err
@@ -28,6 +30,7 @@ func (o QuestionDAO) GetAll() ([]model.Question, error) {
 }
 
 func (o QuestionDAO) Save(question *model.Question) error {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return notConnectedError{}
@@ -49,11 +52,12 @@ func (o QuestionDAO) Save(question *model.Question) error {
 }
 
 func (o QuestionDAO) GetById(id int64) (*model.Question, error) {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 	var question model.Question
-	err := db.Get(&question, sqlGetQuestionById, id)
+	err = db.Get(&question, sqlGetQuestionById, id)
 	return &question, err
 }

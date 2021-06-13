@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"singlishwords/database"
 	"singlishwords/log"
 	"singlishwords/model"
 )
@@ -16,12 +17,13 @@ const (
 type AnswerDAO struct{}
 
 func (o AnswerDAO) GetAll() ([]model.Answer, error) {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 	var answers []model.Answer
-	err := db.Select(&answers, sqlGetAllAnswers)
+	err = db.Select(&answers, sqlGetAllAnswers)
 	if err != nil {
 		return answers, err
 	}
@@ -29,6 +31,7 @@ func (o AnswerDAO) GetAll() ([]model.Answer, error) {
 }
 
 func (o AnswerDAO) Save(answer *model.Answer) error {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return notConnectedError{}
@@ -44,11 +47,12 @@ func (o AnswerDAO) Save(answer *model.Answer) error {
 }
 
 func (o AnswerDAO) SaveAll(answers []model.Answer) error {
+	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return notConnectedError{}
 	}
-	_, err := db.NamedExec(sqlInsertAnswer, answers)
+	_, err = db.NamedExec(sqlInsertAnswer, answers)
 	log.Logger.Infof("Saved %d answers to database.", len(answers))
 	return err
 }

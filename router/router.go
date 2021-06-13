@@ -14,6 +14,7 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 	g.Use(log.RouteLogger())
 	v1 := g.Group(config.App.BaseURL)
 	{
+		v1.GET("/", responseWrapper(apiv1.ShowAllSub))
 		// Question
 		v1.GET("/questions", responseWrapper(question.GetQuestions))
 
