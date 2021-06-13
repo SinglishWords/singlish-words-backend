@@ -12,7 +12,8 @@ import (
 func RouteLogger() gin.HandlerFunc {
 	//gin.DefaultWriter = os.Stdout
 	if config.Log.Route != "stdout" {
-		f, err := os.Create(config.Log.Route)
+		f, err := os.OpenFile(config.Log.Route,
+			os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
 			Logger.Fatalf("Error when create route log file: %v", err)
 		}
@@ -23,7 +24,7 @@ func RouteLogger() gin.HandlerFunc {
 		// your custom format
 		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
 			param.ClientIP,
-			param.TimeStamp.Format(time.RFC1123),
+			param.TimeStamp.Format(time.RFC3339),
 			param.Method,
 			param.Path,
 			param.Request.Proto,

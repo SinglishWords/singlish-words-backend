@@ -16,8 +16,6 @@ redis:
 swagger:
   enable: true
   path: /_/swagger/*any
-log:
-#  route: stdout #/var/local/log/singlishwords/routes.log
-#  info: stdout #/var/local/log/singlishwords/info.log
+log: # default output is `stdout`, or can use a file name
   route: /var/log/singlishwords/route.log
   info: /var/log/singlishwords/info.log

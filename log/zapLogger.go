@@ -28,8 +28,9 @@ func getEncoder() zapcore.Encoder {
 
 func getLogWriter() zapcore.WriteSyncer {
 	if config.Log.Info != "stdout" {
-		file, _ := os.Create(config.Log.Info)
-		return zapcore.AddSync(file)
+		f, _ := os.OpenFile(config.Log.Info,
+			os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		return zapcore.AddSync(f)
 	}
 	return zapcore.NewMultiWriteSyncer(os.Stdout)
 }
