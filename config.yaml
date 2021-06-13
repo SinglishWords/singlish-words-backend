@@ -1,7 +1,8 @@
 app:
   addr: :8080
-  mode: release
-mysql:
+  mode: debug #release
+  baseurl: /
+mysql: #just template, will change when
   host: localhost:3306
   user: csqsiew
   dbname: singlishwords

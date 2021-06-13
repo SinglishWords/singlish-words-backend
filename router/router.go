@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"singlishwords/config"
 	"singlishwords/controller/apiv1"
 	"singlishwords/controller/apiv1/answer"
 	"singlishwords/controller/apiv1/question"
@@ -10,19 +11,22 @@ import (
 
 func InitRouter(g *gin.Engine) *gin.Engine {
 
-	v1 := g.Group("/api/v1")
+	v1 := g.Group(config.App.BaseURL)
 	{
 		// Question
-		v1.GET("/question", responseWrapper(question.GetQuestions))
+		v1.GET("/questions", responseWrapper(question.GetQuestions))
 
 		// Answer
-		v1.GET("/answer", responseWrapper(answer.GetAnswers))
+		v1.GET("/answers", responseWrapper(answer.GetAnswers))
 		v1.POST("/answer", responseWrapper(answer.PostAnswer))
 		// v1.POST("/answer", ResponseWrapper(answerAPI.PostAnswer))
 
+		// Together
+		v1.POST("/answers", responseWrapper(answer.PostRespondentWithAnswers))
+
 		// Respondent
 		v1.POST("/respondent", responseWrapper(respondent.PostRespondent))
-		v1.GET("/respondent", responseWrapper(respondent.GetRespondent))
+		v1.GET("/respondents", responseWrapper(respondent.GetRespondent))
 	}
 
 	return g

@@ -13,7 +13,7 @@ import (
 // @Param limit query int false "default=10000"
 // @Success 200 {object} []model.Respondent
 // @Failure 500 {object} apiv1.ErrorResponse
-// @Router /respondent [get]
+// @Router /respondents [get]
 func GetRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	code := apiv1.StatusOK
 	param := struct {

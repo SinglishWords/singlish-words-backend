@@ -19,3 +19,7 @@ func GetAllRespondents() ([]model.Respondent, error) {
 func GetRespondentById(id int64) (*model.Respondent, error) {
 	return respondentDAO.GetById(id)
 }
+
+func AddRespondentAndAnswersTogether(r *model.Respondent, as []model.Answer) (*model.Respondent, error) {
+	return respondentDAO.AddRespondentWithAnswers(r, as)
+}

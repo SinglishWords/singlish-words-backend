@@ -18,8 +18,9 @@ var Swagger struct {
 	Path   string
 }
 var App struct {
-	Addr string
-	Mode string
+	Addr    string
+	Mode    string
+	BaseURL string
 }
 
 func readMySqlConfig(viper *viper.Viper) error {
@@ -52,13 +53,17 @@ func readSwaggerConfig(viper *viper.Viper) error {
 func readAppConfig(viper *viper.Viper) error {
 	App.Addr = "8080"
 	App.Mode = "release"
+	App.BaseURL = "/api/v1"
 	return viper.UnmarshalKey("app", &App)
 }
 
 func init() {
 	viper := viper.New()
 
+	//viper.AddConfigPath("/etc/singlishwords/web/")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("/usr/local/etc/singlishwords/web/")
+
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 

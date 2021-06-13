@@ -11,9 +11,9 @@ import (
 // @Tags Answer
 // @Produce json
 // @Param limit query int false "default=10000"
-// @Success 201 {object} []model.Answer
+// @Success 200 {object} []model.Answer
 // @Failure 500 {object} apiv1.ErrorResponse
-// @Router /answer [get]
+// @Router /answers [get]
 func GetAnswers(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	param := struct {
 		Limit int

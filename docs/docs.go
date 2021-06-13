@@ -34,40 +34,6 @@ var doc = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/answer": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Answer"
-                ],
-                "summary": "Get all answers",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "default=10000",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Answer"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apiv1.ErrorResponse"
-                        }
-                    }
-                }
-            },
             "post": {
                 "produces": [
                     "application/json"
@@ -103,7 +69,77 @@ var doc = `{
                 }
             }
         },
-        "/question": {
+        "/answers": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Get all answers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "default=10000",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Answer"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Answer"
+                ],
+                "summary": "Post respondent information and answers together",
+                "parameters": [
+                    {
+                        "description": "the information",
+                        "name": "respondent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/answer.paramPostRespondentWithAnswers"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Respondent"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/questions": {
             "get": {
                 "description": "Get a list of questions",
                 "produces": [
@@ -141,40 +177,6 @@ var doc = `{
             }
         },
         "/respondent": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Respondent"
-                ],
-                "summary": "Get all respondents",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "default=10000",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Respondent"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apiv1.ErrorResponse"
-                        }
-                    }
-                }
-            },
             "post": {
                 "produces": [
                     "application/json"
@@ -209,9 +211,106 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/respondents": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Respondent"
+                ],
+                "summary": "Get all respondents",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "default=10000",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Respondent"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "answer.paramPostRespondentWithAnswers": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "association1": {
+                                "type": "string"
+                            },
+                            "association2": {
+                                "type": "string"
+                            },
+                            "association3": {
+                                "type": "string"
+                            },
+                            "questionId": {
+                                "type": "integer"
+                            },
+                            "timeSpend": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "countryOfBirth": {
+                    "type": "string"
+                },
+                "countryOfResidence": {
+                    "type": "string"
+                },
+                "education": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "ethnicity": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "isNative": {
+                    "type": "string"
+                },
+                "languagesSpoken": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
         "answer.paramPostSingleAnswer": {
             "type": "object",
             "properties": {

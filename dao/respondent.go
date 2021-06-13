@@ -1,6 +1,9 @@
 package dao
 
-import "singlishwords/model"
+import (
+	"log"
+	"singlishwords/model"
+)
 
 const (
 	sqlInsertRespondent = `INSERT INTO respondent 
@@ -48,4 +51,39 @@ func (RespondentDAO) GetAll() ([]model.Respondent, error) {
 	var respondents []model.Respondent
 	err := db.Select(&respondents, sqlGetAllRespondents)
 	return respondents, err
+}
+
+func (RespondentDAO) AddRespondentWithAnswers(r *model.Respondent, as []model.Answer) (*model.Respondent, error) {
+	if db == nil {
+		return nil, notConnectedError{}
+	}
+
+	tx, err := db.Beginx()
+	result, err := tx.NamedExec(sqlInsertRespondent, r)
+	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Printf("insert respondent failed: %v, unable to back: %v, the respondent: %+v", err, rollbackErr, r)
+		}
+		log.Println(err.Error())
+		return nil, insertError{}
+	}
+
+	rid, err := result.LastInsertId()
+
+	for _, a := range as {
+		a.RespondentId = rid
+		result, err = tx.NamedExec(sqlInsertAnswer, a)
+		if err != nil {
+			log.Printf("insert answer failed: %v, the answer: %+v", err, a)
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Printf("insert respondent with answers together failed. The respondent: %v, the answers: %v", r, as)
+		return nil, err
+	}
+
+	r.Id = rid
+	return r, nil
 }

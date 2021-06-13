@@ -6,7 +6,7 @@ import (
 
 const (
 	sqlGetAllAnswers = `SELECT * FROM answer;`
-	sqlSaveAnswer    = `INSERT INTO answer 
+	sqlInsertAnswer  = `INSERT INTO answer 
 						(association1, association2, association3, time_spend, question_id, respondent_id)
 						VALUES 
 						(:association1, :association2, :association3, :time_spend, :question_id, :respondent_id);`
@@ -30,7 +30,7 @@ func (o AnswerDAO) Save(answer *model.Answer) error {
 	if db == nil {
 		return notConnectedError{}
 	}
-	result, err := db.NamedExec(sqlSaveAnswer, answer)
+	result, err := db.NamedExec(sqlInsertAnswer, answer)
 	if err != nil {
 		return err
 	}
@@ -43,6 +43,6 @@ func (o AnswerDAO) SaveAll(answers []model.Answer) error {
 	if db == nil {
 		return notConnectedError{}
 	}
-	_, err := db.NamedExec(sqlSaveAnswer, answers)
+	_, err := db.NamedExec(sqlInsertAnswer, answers)
 	return err
 }
