@@ -47,16 +47,14 @@ definitions:
     type: object
   answer.paramPostSingleAnswer:
     properties:
-      association1:
-        type: string
-      association2:
-        type: string
-      association3:
-        type: string
       questionId:
         type: integer
       respondentId:
         type: integer
+      response:
+        items:
+          type: string
+        type: array
       timeSpend:
         type: integer
     type: object
@@ -146,7 +144,9 @@ definitions:
       isNative:
         type: string
       languagesSpoken:
-        type: string
+        items:
+          type: string
+        type: array
       startTime:
         type: string
     type: object

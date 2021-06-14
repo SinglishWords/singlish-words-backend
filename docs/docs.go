@@ -344,20 +344,17 @@ var doc = `{
         "answer.paramPostSingleAnswer": {
             "type": "object",
             "properties": {
-                "association1": {
-                    "type": "string"
-                },
-                "association2": {
-                    "type": "string"
-                },
-                "association3": {
-                    "type": "string"
-                },
                 "questionId": {
                     "type": "integer"
                 },
                 "respondentId": {
                     "type": "integer"
+                },
+                "response": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "timeSpend": {
                     "type": "integer"
@@ -495,7 +492,10 @@ var doc = `{
                     "type": "string"
                 },
                 "languagesSpoken": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "startTime": {
                     "type": "string"
