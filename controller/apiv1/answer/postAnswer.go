@@ -9,20 +9,18 @@ import (
 )
 
 type paramPostSingleAnswer struct {
-	QuestionId   int64  `json:"questionId"`
-	RespondentId int64  `json:"respondentId"`
-	TimeSpend    int    `json:"timeSpend"`
-	Association1 string `json:"association1"`
-	Association2 string `json:"association2"`
-	Association3 string `json:"association3"`
+	QuestionId   int64     `json:"questionId"`
+	RespondentId int64     `json:"respondentId"`
+	TimeSpend    int       `json:"timeSpend"`
+	Responses    [3]string `json:"response"`
 }
 
 func (p *paramPostSingleAnswer) ToAnswer() *model.Answer {
 	return &model.Answer{
 		Id:           -1,
-		Association1: p.Association1,
-		Association2: p.Association2,
-		Association3: p.Association3,
+		Association1: p.Responses[0],
+		Association2: p.Responses[1],
+		Association3: p.Responses[2],
 		TimeSpend:    time.Duration(p.TimeSpend),
 		QuestionId:   p.QuestionId,
 		RespondentId: p.RespondentId,
