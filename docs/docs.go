@@ -18,16 +18,7 @@ var doc = `{
     "info": {
         "description": "{{.Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -152,7 +143,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Will return limit number of questions, default=8",
+                        "description": "default=20",
                         "name": "limit",
                         "in": "query"
                     }
@@ -340,7 +331,10 @@ var doc = `{
                     "type": "string"
                 },
                 "languagesSpoken": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "startTime": {
                     "type": "string"
@@ -523,11 +517,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8080",
+	Host:        "35.175.147.177",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "Singlish words API document",
-	Description: "This is a sample server Petstore server.",
+	Description: "The singlish words app API document",
 }
 
 type s struct{}

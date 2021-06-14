@@ -12,6 +12,7 @@ type HttpStatus struct {
 
 var StatusOK = HttpStatus{200, "Ok."}
 var StatusCreated = HttpStatus{201, "Successful add this object to database."}
+var StatusNoContent = HttpStatus{204, "Successful update this object in database."}
 var StatusFailure = HttpStatus{500, "Err."}
 
 var StatusPostParamError = HttpStatus{500, "Cannot extract parameters in form correctly."}

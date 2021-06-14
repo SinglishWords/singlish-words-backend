@@ -27,8 +27,9 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 		v1.POST("/answers", responseWrapper(answer.PostRespondentWithAnswers))
 
 		// Respondent
-		v1.POST("/respondent", responseWrapper(respondent.PostRespondent))
 		v1.GET("/respondents", responseWrapper(respondent.GetRespondent))
+		v1.POST("/respondent", responseWrapper(respondent.PostRespondent))
+		v1.PATCH("/respondent", responseWrapper(respondent.PatchRespondent))
 	}
 
 	return g

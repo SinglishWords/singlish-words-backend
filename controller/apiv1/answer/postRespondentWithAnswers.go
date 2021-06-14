@@ -1,6 +1,7 @@
 package answer
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"singlishwords/controller/apiv1"
 	"singlishwords/model"
@@ -21,7 +22,8 @@ func PostRespondentWithAnswers(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	rb := paramPostRespondentWithAnswers{}
 	err := c.BindJSON(&rb)
 	if err != nil {
-		code = apiv1.StatusPostParamError
+		//code = apiv1.StatusPostParamError
+		code = apiv1.StatusFail(err.Error())
 		return code, nil
 	}
 
@@ -44,7 +46,7 @@ type paramPostRespondentWithAnswers struct {
 	CountryOfResidence string    `json:"countryOfResidence"`
 	Ethnicity          string    `json:"ethnicity"`
 	IsNative           string    `json:"isNative"`
-	LanguagesSpoken    string    `json:"languagesSpoken"`
+	LanguagesSpoken    []string  `json:"languagesSpoken"`
 	StartTime          time.Time `json:"startTime"`
 	EndTime            time.Time `json:"endTime"`
 	Email              string    `json:"email"`
@@ -53,8 +55,8 @@ type paramPostRespondentWithAnswers struct {
 			Id   int64  `json:"id"`
 			Word string `json:"word"`
 		} `json:"question"`
-		Responses []string `json:"response"`
-		TimeSpend int      `json:"timeOnPage"`
+		Responses [3]string `json:"response"`
+		TimeSpend int       `json:"timeOnPage"`
 	} `json:"data"`
 }
 
@@ -69,7 +71,7 @@ func (rb *paramPostRespondentWithAnswers) ToModels() (*model.Respondent, []model
 		CountryOfResidence: rb.CountryOfResidence,
 		Ethnicity:          rb.Ethnicity,
 		IsNative:           rb.IsNative,
-		LanguagesSpoken:    rb.LanguagesSpoken,
+		LanguagesSpoken:    fmt.Sprintf("%+q", rb.LanguagesSpoken),
 		StartTime:          rb.StartTime,
 		EndTime:            rb.EndTime,
 		Email:              rb.Email,

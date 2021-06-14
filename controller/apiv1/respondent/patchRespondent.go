@@ -27,7 +27,7 @@ func PatchRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	if err != nil {
 		return apiv1.StatusFail("Unable to update the email information."), nil
 	}
-	return apiv1.StatusCreated, nil
+	return apiv1.StatusNoContent, nil
 }
 
 type patchRespondentBody struct {

@@ -1,7 +1,7 @@
 app:
   addr: :8080
-  mode: release
-  baseurl: /
+  mode: debug #release
+  baseurl: / #api/v1/
 mysql: #just template, will change when
   host: localhost:3306
   user: csqsiew

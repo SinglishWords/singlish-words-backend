@@ -22,7 +22,7 @@ func PostRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	rb := postRespondentBody{}
 	err := c.BindJSON(&rb)
 	if err != nil {
-		code = apiv1.StatusPostParamError
+		code = apiv1.StatusFail(err.Error()) //apiv1.StatusPostParamError
 		return code, nil
 	}
 

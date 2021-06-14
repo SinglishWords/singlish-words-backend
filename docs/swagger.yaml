@@ -39,7 +39,9 @@ definitions:
       isNative:
         type: string
       languagesSpoken:
-        type: string
+        items:
+          type: string
+        type: array
       startTime:
         type: string
     type: object
@@ -148,17 +150,10 @@ definitions:
       startTime:
         type: string
     type: object
-host: localhost:8080
+host: 35.175.147.177
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: This is a sample server Petstore server.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
+  contact: {}
+  description: The singlish words app API document
   title: Singlish words API document
   version: "1.0"
 paths:
@@ -234,7 +229,7 @@ paths:
     get:
       description: Get a list of questions
       parameters:
-      - description: Will return limit number of questions, default=8
+      - description: default=20
         in: query
         name: limit
         type: integer
