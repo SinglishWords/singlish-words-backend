@@ -7,11 +7,11 @@ import (
 	"singlishwords/controller/apiv1/answer"
 	"singlishwords/controller/apiv1/question"
 	"singlishwords/controller/apiv1/respondent"
-	"singlishwords/log"
+	"singlishwords/middleware"
 )
 
 func InitRouter(g *gin.Engine) *gin.Engine {
-	g.Use(log.RouteLogger())
+	g.Use(middleware.RouteLogger())
 	v1 := g.Group(config.App.BaseURL)
 	{
 		v1.GET("/", responseWrapper(apiv1.ShowAllSub))

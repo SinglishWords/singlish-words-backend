@@ -1,4 +1,4 @@
-package log
+package middleware
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"singlishwords/config"
+	"singlishwords/log"
 	"time"
 )
 
@@ -15,7 +16,7 @@ func RouteLogger() gin.HandlerFunc {
 		f, err := os.OpenFile(config.Log.Route,
 			os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
-			Logger.Fatalf("Error when create route log file: %v", err)
+			log.Logger.Fatalf("Error when create route log file: %v", err)
 		}
 		gin.DefaultWriter = io.MultiWriter(f)
 	}

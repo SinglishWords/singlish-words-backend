@@ -2,6 +2,7 @@ package service
 
 import (
 	"singlishwords/cache"
+	"singlishwords/dao"
 	"singlishwords/model"
 )
 
@@ -18,4 +19,13 @@ func AddQuestions() error {
 
 func DelQuestion() error {
 	return nil
+}
+
+func GetAllQuestions() ([]model.Question, error) {
+	questionDAO := dao.QuestionDAO{}
+	questions, err := questionDAO.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return questions, nil
 }

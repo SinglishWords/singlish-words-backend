@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `respondent` (
     `email`                 VARCHAR(320) ,
 
     PRIMARY KEY (`id`)
-);
+) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `question` (
 --   name         type            constraints
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `question` (
     `word`        VARCHAR(128)    NOT NULL,
     
     PRIMARY KEY (`id`)
-);
+) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `answer` (
 --   name           type             constraints
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `answer` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`question_id`)  REFERENCES question(`id`),
     FOREIGN KEY (`respondent_id`) REFERENCES respondent(`id`)
-);
+) CHARSET=utf8;
 
 -- Init question data
 INSERT INTO `question` (`word`) VALUES
