@@ -23,7 +23,7 @@ func PatchRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 		return code, nil
 	}
 
-	err = service.UpdateRespondentEmail(rb.Id, rb.Email)
+	err = service.UpdateRespondentEmail(rb.Id, rb.Email, rb.WantLuckyDraw, rb.WantUpdate)
 	if err != nil {
 		return apiv1.StatusFail("Unable to update the email information."), nil
 	}
@@ -31,6 +31,8 @@ func PatchRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 }
 
 type patchRespondentBody struct {
-	Id    int64  `json:"id" db:"id"`
-	Email string `json:"email" db:"email"`
+	Id            int64  `json:"id" db:"id"`
+	Email         string `json:"email" db:"email"`
+	WantLuckyDraw string `json:"wantLuckyDraw" db:"want_luck_draw"`
+	WantUpdate    string `json:"wantUpdate" db:"want_update"`
 }

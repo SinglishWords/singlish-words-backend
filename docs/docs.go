@@ -315,9 +315,6 @@ var doc = `{
                 "education": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "endTime": {
                     "type": "string"
                 },
@@ -447,6 +444,12 @@ var doc = `{
                 },
                 "startTime": {
                     "type": "string"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
                 }
             }
         },
@@ -458,6 +461,12 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
                 }
             }
         },
@@ -474,9 +483,6 @@ var doc = `{
                     "type": "string"
                 },
                 "education": {
-                    "type": "string"
-                },
-                "email": {
                     "type": "string"
                 },
                 "endTime": {

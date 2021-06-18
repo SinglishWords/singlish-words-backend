@@ -300,9 +300,6 @@
                 "education": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "endTime": {
                     "type": "string"
                 },
@@ -432,6 +429,12 @@
                 },
                 "startTime": {
                     "type": "string"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
                 }
             }
         },
@@ -443,6 +446,12 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
                 }
             }
         },
@@ -459,9 +468,6 @@
                     "type": "string"
                 },
                 "education": {
-                    "type": "string"
-                },
-                "email": {
                     "type": "string"
                 },
                 "endTime": {

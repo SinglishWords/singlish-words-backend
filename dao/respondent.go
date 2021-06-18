@@ -9,12 +9,12 @@ import (
 const (
 	sqlInsertRespondent = `INSERT INTO respondent 
 			(age, gender, education, country_of_birth, country_of_residence, 
-			 ethnicity, is_native, language_spoken, start_time, end_time, email) 
+			 ethnicity, is_native, language_spoken, start_time, end_time, email, want_lucky_draw, want_update) 
 			 VALUES (:age, :gender, :education, :country_of_birth, :country_of_residence, 
-			 :ethnicity, :is_native, :language_spoken, :start_time, :end_time, :email);`
+			 :ethnicity, :is_native, :language_spoken, :start_time, :end_time, :email, :want_lucky_draw, :want_lucky_draw);`
 	sqlGetAllRespondents     = `SELECT * FROM respondent;`
 	sqlGetRespondentById     = `SELECT * FROM respondent WHERE id=?;`
-	sqlUpdateRespondentEmail = `UPDATE respondent SET email=? WHERE id=?`
+	sqlUpdateRespondentEmail = `UPDATE respondent SET email=?, want_lucky_draw=?, want_update=? WHERE id=?`
 )
 
 type RespondentDAO struct{}
@@ -58,13 +58,13 @@ func (RespondentDAO) GetAll() ([]model.Respondent, error) {
 	return respondents, err
 }
 
-func (RespondentDAO) UpdateEmail(id int64, email string) error {
+func (RespondentDAO) UpdateEmail(id int64, email string, wantLuckyDraw string, wantUpdate string) error {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		return notConnectedError{}
 	}
 
-	_, err = db.Exec(sqlUpdateRespondentEmail, email, id)
+	_, err = db.Exec(sqlUpdateRespondentEmail, email, wantLuckyDraw, wantUpdate, id)
 	if err != nil {
 		log.Logger.Warnf("Fail to update a user's email, user id: %v, email: %v", id, email)
 		return err

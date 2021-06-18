@@ -24,6 +24,6 @@ func AddRespondentAndAnswersTogether(r *model.Respondent, as []model.Answer) (*m
 	return respondentDAO.AddRespondentWithAnswers(r, as)
 }
 
-func UpdateRespondentEmail(id int64, email string) error {
-	return respondentDAO.UpdateEmail(id, email)
+func UpdateRespondentEmail(id int64, email string, wantLuckyDraw string, wantUpdate string) error {
+	return respondentDAO.UpdateEmail(id, email, wantLuckyDraw, wantUpdate)
 }

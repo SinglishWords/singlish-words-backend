@@ -28,8 +28,6 @@ definitions:
         type: array
       education:
         type: string
-      email:
-        type: string
       endTime:
         type: string
       ethnicity:
@@ -115,6 +113,10 @@ definitions:
         type: string
       startTime:
         type: string
+      wantLuckyDraw:
+        type: string
+      wantUpdate:
+        type: string
     type: object
   respondent.patchRespondentBody:
     properties:
@@ -122,6 +124,10 @@ definitions:
         type: string
       id:
         type: integer
+      wantLuckyDraw:
+        type: string
+      wantUpdate:
+        type: string
     type: object
   respondent.postRespondentBody:
     properties:
@@ -132,8 +138,6 @@ definitions:
       countryOfResidence:
         type: string
       education:
-        type: string
-      email:
         type: string
       endTime:
         type: string

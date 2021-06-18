@@ -18,12 +18,14 @@ CREATE TABLE IF NOT EXISTS `respondent` (
     `country_of_birth`      VARCHAR(256) ,
     `country_of_residence`  VARCHAR(256) ,
     `ethnicity`             VARCHAR(256) ,
-    `is_native`             VARCHAR(4)     ,
+    `is_native`             VARCHAR(5)     ,
     `language_spoken`       TEXT,
     `start_time`            DATETIME        ,
     `end_time`              DATETIME        ,
     `email`                 VARCHAR(320) ,
 
+    `want_lucky_draw`       VARCHAR(5)     DEFAULT 'no',
+    `want_update`           VARCHAR(5)     DEFAULT 'no',
     PRIMARY KEY (`id`)
 ) CHARSET=utf8;
 
