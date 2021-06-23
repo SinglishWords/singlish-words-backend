@@ -36,15 +36,20 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 }
 
 func responseWrapper(f func(*gin.Context) (apiv1.HttpStatus, interface{})) gin.HandlerFunc {
+	returnWithContentStatus := map[apiv1.HttpStatus]struct{}{
+		apiv1.StatusOK:      {},
+		apiv1.StatusCreated: {},
+	}
+
 	return func(c *gin.Context) {
 		code, data := f(c)
-		if code != apiv1.StatusOK {
+		if _, ok := returnWithContentStatus[code]; ok {
+			c.JSON(code.Code, data)
+		} else {
 			c.JSON(code.Code, gin.H{
 				"code":    code.Code,
 				"message": code.Msg,
 			})
-		} else {
-			c.JSON(code.Code, data)
 		}
 	}
 }
