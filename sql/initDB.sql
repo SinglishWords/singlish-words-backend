@@ -33,7 +33,9 @@ CREATE TABLE IF NOT EXISTS `question` (
 --   name         type            constraints
     `id`          INT             NOT NULL      AUTO_INCREMENT,
     `word`        VARCHAR(128)    NOT NULL,
-    
+    `enable`      INT             DEFAULT 1,
+
+    UNIQUE (`word`),
     PRIMARY KEY (`id`)
 ) CHARSET=utf8;
 
