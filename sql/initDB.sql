@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `email` (
     `email`                 VARCHAR(320),
 
     `want_lucky_draw`       VARCHAR(5)     DEFAULT 'no',
-    `want_update`           VARCHAR(5)     DEFAULT 'no'
+    `want_update`           VARCHAR(5)     DEFAULT 'no',
+    `time_on_pages`         TEXT
 
 ) CHARSET=utf8;
 

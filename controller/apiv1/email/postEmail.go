@@ -1,23 +1,39 @@
 package email
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"singlishwords/controller/apiv1"
 	"singlishwords/model"
 	"singlishwords/service"
+	"strings"
 )
 
 type paramPostEmail struct {
 	Email         string `json:"email" db:"email"`
 	WantLuckyDraw string `json:"wantLuckyDraw" db:"want_lucky_draw"`
 	WantUpdate    string `json:"wantUpdate" db:"want_update"`
+	TimeOnPages   []int  `json:"timeOnPages" db:"time_on_pages"`
+}
+
+func tfToYs(s string) string {
+	if s == "true" {
+		return "yes"
+	} else if s == "false" {
+		return "no"
+	}
+	return s
 }
 
 func (p *paramPostEmail) toEmail() *model.Email {
+	p.WantUpdate = tfToYs(p.WantUpdate)
+	p.WantLuckyDraw = tfToYs(p.WantLuckyDraw)
+
 	return &model.Email{
 		Email:         p.Email,
 		WantLuckyDraw: p.WantLuckyDraw,
 		WantUpdate:    p.WantUpdate,
+		TimeOnPages:   strings.Join(strings.Fields(fmt.Sprint(p.TimeOnPages)), ", "),
 	}
 }
 

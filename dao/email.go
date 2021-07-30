@@ -8,9 +8,9 @@ import (
 
 const (
 	sqlInsertEmail = `INSERT INTO email 
-					(email, want_lucky_draw, want_update)
+					(email, want_lucky_draw, want_update, time_on_pages)
 					VALUES 
-					(:email, :want_lucky_draw, :want_update);`
+					(:email, :want_lucky_draw, :want_update, :time_on_pages);`
 )
 
 type EmailDAO struct{}
