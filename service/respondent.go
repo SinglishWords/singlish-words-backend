@@ -23,7 +23,3 @@ func GetRespondentById(id int64) (*model.Respondent, error) {
 func AddRespondentAndAnswersTogether(r *model.Respondent, as []model.Answer) (*model.Respondent, error) {
 	return respondentDAO.AddRespondentWithAnswers(r, as)
 }
-
-func UpdateRespondentEmail(id int64, email string, wantLuckyDraw string, wantUpdate string) error {
-	return respondentDAO.UpdateEmail(id, email, wantLuckyDraw, wantUpdate)
-}

@@ -63,6 +63,15 @@ definitions:
       msg:
         type: string
     type: object
+  email.paramPostEmail:
+    properties:
+      email:
+        type: string
+      wantLuckyDraw:
+        type: string
+      wantUpdate:
+        type: string
+    type: object
   model.Answer:
     properties:
       association1:
@@ -80,8 +89,19 @@ definitions:
       timeSpend:
         type: integer
     type: object
+  model.Email:
+    properties:
+      email:
+        type: string
+      wantLuckyDraw:
+        type: string
+      wantUpdate:
+        type: string
+    type: object
   model.Question:
     properties:
+      enable:
+        type: integer
       id:
         type: integer
       word:
@@ -113,17 +133,6 @@ definitions:
         type: string
       startTime:
         type: string
-      wantLuckyDraw:
-        type: string
-      wantUpdate:
-        type: string
-    type: object
-  respondent.patchRespondentBody:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
       wantLuckyDraw:
         type: string
       wantUpdate:
@@ -229,6 +238,29 @@ paths:
       summary: Post respondent information and answers together
       tags:
       - Answer
+  /email:
+    post:
+      parameters:
+      - description: the email with two options
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/email.paramPostEmail'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Email'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Post an email
+      tags:
+      - Email
   /questions:
     get:
       description: Get a list of questions
@@ -254,26 +286,6 @@ paths:
       tags:
       - Questions
   /respondent:
-    patch:
-      parameters:
-      - description: respondent information
-        in: body
-        name: respondent
-        required: true
-        schema:
-          $ref: '#/definitions/respondent.patchRespondentBody'
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: ""
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apiv1.ErrorResponse'
-      summary: Patch emails
-      tags:
-      - Respondent
     post:
       parameters:
       - description: respondent information

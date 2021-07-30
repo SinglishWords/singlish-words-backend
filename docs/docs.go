@@ -130,6 +130,42 @@ var doc = `{
                 }
             }
         },
+        "/email": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Post an email",
+                "parameters": [
+                    {
+                        "description": "the email with two options",
+                        "name": "answer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/email.paramPostEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Email"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/questions": {
             "get": {
                 "description": "Get a list of questions",
@@ -193,37 +229,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/model.Respondent"
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apiv1.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Respondent"
-                ],
-                "summary": "Patch emails",
-                "parameters": [
-                    {
-                        "description": "respondent information",
-                        "name": "respondent",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/respondent.patchRespondentBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": ""
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -369,6 +374,20 @@ var doc = `{
                 }
             }
         },
+        "email.paramPostEmail": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Answer": {
             "type": "object",
             "properties": {
@@ -395,9 +414,26 @@ var doc = `{
                 }
             }
         },
+        "model.Email": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Question": {
             "type": "object",
             "properties": {
+                "enable": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -444,23 +480,6 @@ var doc = `{
                 },
                 "startTime": {
                     "type": "string"
-                },
-                "wantLuckyDraw": {
-                    "type": "string"
-                },
-                "wantUpdate": {
-                    "type": "string"
-                }
-            }
-        },
-        "respondent.patchRespondentBody": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "wantLuckyDraw": {
                     "type": "string"

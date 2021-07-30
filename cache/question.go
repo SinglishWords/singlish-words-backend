@@ -20,6 +20,7 @@ func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, err
 	}
 
 	log.Logger.Warn("Cache get random questions, miss!")
+
 	// cache miss...
 	questions, err = questionDAO.GetAll()
 	if err != nil {

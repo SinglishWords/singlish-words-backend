@@ -5,6 +5,7 @@ import (
 	"singlishwords/config"
 	"singlishwords/controller/apiv1"
 	"singlishwords/controller/apiv1/answer"
+	"singlishwords/controller/apiv1/email"
 	"singlishwords/controller/apiv1/question"
 	"singlishwords/controller/apiv1/respondent"
 	"singlishwords/middleware"
@@ -29,7 +30,10 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 		// Respondent
 		v1.GET("/respondents", responseWrapper(respondent.GetRespondent))
 		v1.POST("/respondent", responseWrapper(respondent.PostRespondent))
-		v1.PATCH("/respondent", responseWrapper(respondent.PatchRespondent))
+		//v1.PATCH("/respondent", responseWrapper(respondent.PatchRespondent))
+
+		// Email
+		v1.POST("/email", responseWrapper(email.PostEmail))
 	}
 
 	return g

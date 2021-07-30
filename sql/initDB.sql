@@ -3,6 +3,7 @@ USE singlishwords;
 DROP TABLE IF EXISTS `answer`;
 DROP TABLE IF EXISTS `respondent`;
 DROP TABLE IF EXISTS `question`;
+DROP TABLE IF EXISTS `email`;
 
 -- ---------------------------------------
 --              CREATE TABLES
@@ -22,11 +23,17 @@ CREATE TABLE IF NOT EXISTS `respondent` (
     `language_spoken`       TEXT,
     `start_time`            DATETIME        ,
     `end_time`              DATETIME        ,
-    `email`                 VARCHAR(320) ,
+
+    PRIMARY KEY (`id`)
+) CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `email` (
+--   name                   type            constraints
+    `email`                 VARCHAR(320),
 
     `want_lucky_draw`       VARCHAR(5)     DEFAULT 'no',
-    `want_update`           VARCHAR(5)     DEFAULT 'no',
-    PRIMARY KEY (`id`)
+    `want_update`           VARCHAR(5)     DEFAULT 'no'
+
 ) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `question` (
@@ -62,9 +69,9 @@ INSERT INTO `question` (`word`) VALUES
 -- Init one respondent
 INSERT INTO `respondent`
     (`age`, `gender`, `education`, `country_of_birth`, `country_of_residence`,
-    `ethnicity`, `is_native`, `language_spoken`, `start_time`, `end_time`, `email`)
+    `ethnicity`, `is_native`, `language_spoken`, `start_time`, `end_time`)
 VALUES (20, "male", "A Level", "Singapore", "Singapore", "Chinese", "yes", "English",
-         "2021-02-03 08:00:00", "2021-02-03 08:20:00", "example@gmail.com");
+         "2021-02-03 08:00:00", "2021-02-03 08:20:00");
 
 -- Init one answer
 INSERT INTO `answer` (`association1`, `association2`, `association3`, `time_spend`, `question_id`, `respondent_id`)
