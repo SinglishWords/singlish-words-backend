@@ -7,6 +7,7 @@ import (
 	"singlishwords/log"
 	"singlishwords/model"
 	"strings"
+	"time"
 )
 
 type QuestionCache struct{}
@@ -42,9 +43,16 @@ func (QuestionCache) storeAllToRedis(questions []model.Question) error {
 		return notConnectedError{}
 	}
 	pipe := rdb.Pipeline()
+
 	//for _, question := range questions {
 	//	pipe.SAdd("question", question)
 	//}
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(questions), func(i, j int) {
+		questions[i], questions[j] = questions[j], questions[i]
+	})
+
 	for _, question := range questions {
 		pipe.LPush("questionList", question)
 	}
