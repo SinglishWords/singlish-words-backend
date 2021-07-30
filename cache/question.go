@@ -14,7 +14,7 @@ type QuestionCache struct{}
 var questionDAO dao.QuestionDAO
 
 func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, error) {
-	questions, err := cache.getNRandomQuestionsFromRedis(limit)
+	questions, err := cache.getNextRangeQuestionsFromRedis(limit)
 	if err == nil {
 		return questions, nil
 	}
@@ -42,8 +42,11 @@ func (QuestionCache) storeAllToRedis(questions []model.Question) error {
 		return notConnectedError{}
 	}
 	pipe := rdb.Pipeline()
+	//for _, question := range questions {
+	//	pipe.SAdd("question", question)
+	//}
 	for _, question := range questions {
-		pipe.SAdd("question", question)
+		pipe.LPush("questionList", question)
 	}
 	_, err := pipe.Exec()
 
@@ -54,13 +57,46 @@ func (QuestionCache) storeAllToRedis(questions []model.Question) error {
 	return nil
 }
 
-func (QuestionCache) getNRandomQuestionsFromRedis(limit int) ([]model.Question, error) {
+func (QuestionCache) getNextRangeQuestionsFromRedis(limit int) ([]model.Question, error) {
 	if rdb == nil {
 		return nil, notConnectedError{}
 	}
-	results, err := rdb.SRandMemberN("question", int64(limit)).Result()
-	if err != nil || len(results) == 0 {
+
+	pipe := rdb.TxPipeline()
+	rIncr := rdb.IncrBy("questionIndex", int64(limit))
+	rSize := rdb.LLen("questionList")
+	_, err := pipe.Exec()
+
+	if err != nil {
 		return nil, cacheMissError{}
+	}
+
+	indexE, size := rIncr.Val(), rSize.Val()
+
+	if size == 0 {
+		return nil, cacheMissError{}
+	}
+
+	indexS := (indexE - int64(limit)) % size
+	indexE = indexE % size
+	// indexS:indexE
+
+	var results []string
+	if indexS <= indexE { // means in normal situation
+		results, err = rdb.LRange("questionList", indexS, indexE).Result()
+		if err != nil {
+			return nil, err
+		}
+	} else { // means over the end, and then come back to the start
+		pipe := rdb.TxPipeline()
+		rRange1 := rdb.LRange("questionList", indexE, size)
+		rRange2 := rdb.LRange("questionList", 0, indexS)
+		_, err := pipe.Exec()
+
+		if err != nil {
+			return nil, err
+		}
+		results = append(rRange1.Val(), rRange2.Val()...)
 	}
 
 	jsonString := "[" + strings.Join(results, ", ") + "]"
