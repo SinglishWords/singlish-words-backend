@@ -380,6 +380,12 @@ var doc = `{
                 "email": {
                     "type": "string"
                 },
+                "timeOnPages": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
                 "wantLuckyDraw": {
                     "type": "string"
                 },
@@ -418,6 +424,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "email": {
+                    "type": "string"
+                },
+                "timeOnPages": {
                     "type": "string"
                 },
                 "wantLuckyDraw": {

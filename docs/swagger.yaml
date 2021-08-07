@@ -67,6 +67,10 @@ definitions:
     properties:
       email:
         type: string
+      timeOnPages:
+        items:
+          type: integer
+        type: array
       wantLuckyDraw:
         type: string
       wantUpdate:
@@ -92,6 +96,8 @@ definitions:
   model.Email:
     properties:
       email:
+        type: string
+      timeOnPages:
         type: string
       wantLuckyDraw:
         type: string
