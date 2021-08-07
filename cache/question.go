@@ -92,6 +92,12 @@ func (QuestionCache) getNextRangeQuestionsFromRedis(limit int) ([]model.Question
 	// indexS:indexE
 
 	var results []string
+	if size < int64(limit) {
+		indexS = 0
+		indexE = size - 1
+		log.Logger.Warnf("Get questions from redis, need oversized questions, so return all from %d to %d", indexS, indexE)
+	}
+
 	if indexS <= indexE { // means in normal situation
 		results, err = rdb.LRange("questionList", indexS, indexE).Result()
 		log.Logger.Infof("Get questions from redis, question range: %d to %d", indexS, indexE)
