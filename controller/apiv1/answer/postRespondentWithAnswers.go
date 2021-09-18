@@ -49,6 +49,7 @@ type paramPostRespondentWithAnswers struct {
 	LanguagesSpoken    []string  `json:"languagesSpoken"`
 	StartTime          time.Time `json:"startTime"`
 	EndTime            time.Time `json:"endTime"`
+	UUID               string    `json:"uuid"`
 	Answers            []struct {
 		Question struct {
 			Id   int64  `json:"id"`
@@ -73,6 +74,7 @@ func (rb *paramPostRespondentWithAnswers) ToModels() (*model.Respondent, []model
 		LanguagesSpoken:    fmt.Sprintf("%+q", rb.LanguagesSpoken),
 		StartTime:          rb.StartTime,
 		EndTime:            rb.EndTime,
+		UUID:               rb.UUID,
 	}
 	answers := make([]model.Answer, len(rb.Answers))
 	for i, answer := range rb.Answers {
