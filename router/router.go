@@ -20,7 +20,7 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 		v1.GET("/questions", responseWrapper(question.GetQuestions))
 
 		// Answer
-		v1.GET("/answers", responseWrapper(answer.GetAnswers))
+		// v1.GET("/answers", responseWrapper(answer.GetAnswers))
 		v1.POST("/answer", responseWrapper(answer.PostAnswer))
 		// v1.POST("/answer", ResponseWrapper(answerAPI.PostAnswer))
 
@@ -28,7 +28,7 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 		v1.POST("/answers", responseWrapper(answer.PostRespondentWithAnswers))
 
 		// Respondent
-		v1.GET("/respondents", responseWrapper(respondent.GetRespondent))
+		// v1.GET("/respondents", responseWrapper(respondent.GetRespondent))
 		v1.POST("/respondent", responseWrapper(respondent.PostRespondent))
 		//v1.PATCH("/respondent", responseWrapper(respondent.PatchRespondent))
 
