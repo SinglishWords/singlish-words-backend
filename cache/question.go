@@ -20,7 +20,7 @@ func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, err
 		return questions, nil
 	}
 
-	log.Logger.Warn("Cache get random questions, miss!")
+	log.Logger.Warn("Cache get random questions, cache miss!")
 
 	// cache miss...
 	questions, err = questionDAO.GetAll()
@@ -62,6 +62,7 @@ func (QuestionCache) storeAllToRedis(questions []model.Question) error {
 		return err
 	}
 
+	log.Logger.Infof("Get %d from mysql and store to the redis.", len(questions))
 	return nil
 }
 
@@ -80,28 +81,41 @@ func (QuestionCache) getNextRangeQuestionsFromRedis(limit int) ([]model.Question
 	}
 
 	indexE, size := rIncr.Val(), rSize.Val()
+	log.Logger.Infof("Getting questions from redis, question base: %d, size %d", indexE, size)
 
 	if size == 0 {
 		return nil, cacheMissError{}
 	}
 
-	indexS := (indexE - int64(limit)) % size
+	indexS := (indexE - int64(limit-1)) % size
 	indexE = indexE % size
 	// indexS:indexE
 
 	var results []string
+	if size < int64(limit) {
+		indexS = 0
+		indexE = size - 1
+		log.Logger.Warnf("Get questions from redis, need oversized questions, so return all from %d to %d", indexS, indexE)
+	}
+
 	if indexS <= indexE { // means in normal situation
 		results, err = rdb.LRange("questionList", indexS, indexE).Result()
+		log.Logger.Infof("Get questions from redis, question range: %d to %d", indexS, indexE)
 		if err != nil {
+			log.Logger.Error("Wrong when getting questions from redis")
 			return nil, err
 		}
 	} else { // means over the end, and then come back to the start
 		pipe := rdb.TxPipeline()
-		rRange1 := rdb.LRange("questionList", indexE, size)
-		rRange2 := rdb.LRange("questionList", 0, indexS)
+		rRange1 := rdb.LRange("questionList", indexS, size-1)
+		rRange2 := rdb.LRange("questionList", 0, indexE)
 		_, err := pipe.Exec()
 
+		log.Logger.Infof("Get questions from redis, question range: %d to %d and %d to %d",
+			indexS, size-1, 0, indexE)
+
 		if err != nil {
+			log.Logger.Error("Wrong when getting questions from redis")
 			return nil, err
 		}
 		results = append(rRange1.Val(), rRange2.Val()...)
