@@ -5,13 +5,14 @@ import (
 	"singlishwords/config"
 	"singlishwords/controller/apiv1"
 	"singlishwords/controller/apiv1/answer"
+	"singlishwords/controller/apiv1/email"
 	"singlishwords/controller/apiv1/question"
 	"singlishwords/controller/apiv1/respondent"
-	"singlishwords/log"
+	"singlishwords/middleware"
 )
 
 func InitRouter(g *gin.Engine) *gin.Engine {
-	g.Use(log.RouteLogger())
+	g.Use(middleware.RouteLogger())
 	v1 := g.Group(config.App.BaseURL)
 	{
 		v1.GET("/", responseWrapper(apiv1.ShowAllSub))
@@ -29,22 +30,30 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 		// Respondent
 		v1.GET("/respondents", responseWrapper(respondent.GetRespondent))
 		v1.POST("/respondent", responseWrapper(respondent.PostRespondent))
-		v1.PATCH("/respondent", responseWrapper(respondent.PatchRespondent))
+		//v1.PATCH("/respondent", responseWrapper(respondent.PatchRespondent))
+
+		// Email
+		v1.POST("/email", responseWrapper(email.PostEmail))
 	}
 
 	return g
 }
 
 func responseWrapper(f func(*gin.Context) (apiv1.HttpStatus, interface{})) gin.HandlerFunc {
+	returnWithContentStatus := map[apiv1.HttpStatus]struct{}{
+		apiv1.StatusOK:      {},
+		apiv1.StatusCreated: {},
+	}
+
 	return func(c *gin.Context) {
 		code, data := f(c)
-		if code != apiv1.StatusOK {
+		if _, ok := returnWithContentStatus[code]; ok {
+			c.JSON(code.Code, data)
+		} else {
 			c.JSON(code.Code, gin.H{
 				"code":    code.Code,
 				"message": code.Msg,
 			})
-		} else {
-			c.JSON(code.Code, data)
 		}
 	}
 }

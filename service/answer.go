@@ -14,3 +14,7 @@ func GetAnswers(limit int) ([]model.Answer, error) {
 func PostAnswer(answer *model.Answer) error {
 	return answerDAO.Save(answer)
 }
+
+func GetAllAnswers() ([]model.Answer, error) {
+	return answerDAO.GetAll()
+}

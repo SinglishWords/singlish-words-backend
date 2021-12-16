@@ -28,8 +28,6 @@ definitions:
         type: array
       education:
         type: string
-      email:
-        type: string
       endTime:
         type: string
       ethnicity:
@@ -47,16 +45,14 @@ definitions:
     type: object
   answer.paramPostSingleAnswer:
     properties:
-      association1:
-        type: string
-      association2:
-        type: string
-      association3:
-        type: string
       questionId:
         type: integer
       respondentId:
         type: integer
+      response:
+        items:
+          type: string
+        type: array
       timeSpend:
         type: integer
     type: object
@@ -65,6 +61,15 @@ definitions:
       code:
         type: integer
       msg:
+        type: string
+    type: object
+  email.paramPostEmail:
+    properties:
+      email:
+        type: string
+      wantLuckyDraw:
+        type: string
+      wantUpdate:
         type: string
     type: object
   model.Answer:
@@ -84,8 +89,19 @@ definitions:
       timeSpend:
         type: integer
     type: object
+  model.Email:
+    properties:
+      email:
+        type: string
+      wantLuckyDraw:
+        type: string
+      wantUpdate:
+        type: string
+    type: object
   model.Question:
     properties:
+      enable:
+        type: integer
       id:
         type: integer
       word:
@@ -117,13 +133,10 @@ definitions:
         type: string
       startTime:
         type: string
-    type: object
-  respondent.patchRespondentBody:
-    properties:
-      email:
+      wantLuckyDraw:
         type: string
-      id:
-        type: integer
+      wantUpdate:
+        type: string
     type: object
   respondent.postRespondentBody:
     properties:
@@ -135,8 +148,6 @@ definitions:
         type: string
       education:
         type: string
-      email:
-        type: string
       endTime:
         type: string
       ethnicity:
@@ -146,7 +157,9 @@ definitions:
       isNative:
         type: string
       languagesSpoken:
-        type: string
+        items:
+          type: string
+        type: array
       startTime:
         type: string
     type: object
@@ -225,6 +238,29 @@ paths:
       summary: Post respondent information and answers together
       tags:
       - Answer
+  /email:
+    post:
+      parameters:
+      - description: the email with two options
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/email.paramPostEmail'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Email'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/apiv1.ErrorResponse'
+      summary: Post an email
+      tags:
+      - Email
   /questions:
     get:
       description: Get a list of questions
@@ -250,26 +286,6 @@ paths:
       tags:
       - Questions
   /respondent:
-    patch:
-      parameters:
-      - description: respondent information
-        in: body
-        name: respondent
-        required: true
-        schema:
-          $ref: '#/definitions/respondent.patchRespondentBody'
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: ""
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/apiv1.ErrorResponse'
-      summary: Patch emails
-      tags:
-      - Respondent
     post:
       parameters:
       - description: respondent information

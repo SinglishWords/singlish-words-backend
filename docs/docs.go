@@ -130,6 +130,42 @@ var doc = `{
                 }
             }
         },
+        "/email": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Post an email",
+                "parameters": [
+                    {
+                        "description": "the email with two options",
+                        "name": "answer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/email.paramPostEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Email"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/apiv1.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/questions": {
             "get": {
                 "description": "Get a list of questions",
@@ -193,37 +229,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/model.Respondent"
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/apiv1.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Respondent"
-                ],
-                "summary": "Patch emails",
-                "parameters": [
-                    {
-                        "description": "respondent information",
-                        "name": "respondent",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/respondent.patchRespondentBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": ""
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -315,9 +320,6 @@ var doc = `{
                 "education": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "endTime": {
                     "type": "string"
                 },
@@ -344,20 +346,17 @@ var doc = `{
         "answer.paramPostSingleAnswer": {
             "type": "object",
             "properties": {
-                "association1": {
-                    "type": "string"
-                },
-                "association2": {
-                    "type": "string"
-                },
-                "association3": {
-                    "type": "string"
-                },
                 "questionId": {
                     "type": "integer"
                 },
                 "respondentId": {
                     "type": "integer"
+                },
+                "response": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "timeSpend": {
                     "type": "integer"
@@ -371,6 +370,20 @@ var doc = `{
                     "type": "integer"
                 },
                 "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "email.paramPostEmail": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
                     "type": "string"
                 }
             }
@@ -401,9 +414,26 @@ var doc = `{
                 }
             }
         },
+        "model.Email": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "wantLuckyDraw": {
+                    "type": "string"
+                },
+                "wantUpdate": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Question": {
             "type": "object",
             "properties": {
+                "enable": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -450,17 +480,12 @@ var doc = `{
                 },
                 "startTime": {
                     "type": "string"
-                }
-            }
-        },
-        "respondent.patchRespondentBody": {
-            "type": "object",
-            "properties": {
-                "email": {
+                },
+                "wantLuckyDraw": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
+                "wantUpdate": {
+                    "type": "string"
                 }
             }
         },
@@ -479,9 +504,6 @@ var doc = `{
                 "education": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "endTime": {
                     "type": "string"
                 },
@@ -495,7 +517,10 @@ var doc = `{
                     "type": "string"
                 },
                 "languagesSpoken": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "startTime": {
                     "type": "string"

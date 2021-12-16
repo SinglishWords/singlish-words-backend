@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"singlishwords/config"
 	"singlishwords/log"
+	"singlishwords/middleware"
 	"singlishwords/router"
 	"syscall"
 	"time"
@@ -30,7 +31,8 @@ func main() {
 	}
 
 	g := gin.New()
-	g.Use(log.RouteLogger())
+	g.Use(middleware.RouteLogger())
+	g.Use(middleware.Cors())
 	g.Use(gin.Recovery())
 
 	if config.Swagger.Enable {

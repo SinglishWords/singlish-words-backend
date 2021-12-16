@@ -15,6 +15,9 @@ func init() {
 		Password: config.Redis.Password, // no password set
 		DB:       config.Redis.DB,       // use default DB
 	})
+
+	rdb.Set("questionIndex", 0, 0)
+	rdb.Del("questionList")
 }
 
 func GetRedisDB() (*redis.Client, error) {

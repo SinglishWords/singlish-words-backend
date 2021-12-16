@@ -17,6 +17,8 @@ type Respondent struct {
 	StartTime          time.Time `json:"startTime" db:"start_time"`
 	EndTime            time.Time `json:"endTime" db:"end_time"`
 	Email              string    `json:"email" db:"email"`
+	WantLuckyDraw      string    `json:"wantLuckyDraw" db:"want_lucky_draw"`
+	WantUpdate         string    `json:"wantUpdate" db:"want_update"`
 }
 
 //func NewRespondent(id int, time string) *Respondent {

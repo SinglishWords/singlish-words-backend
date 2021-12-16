@@ -49,7 +49,6 @@ type postRespondentBody struct {
 	LanguagesSpoken    []string  `json:"languagesSpoken" db:"language_spoken"`
 	StartTime          time.Time `json:"startTime" db:"start_time"`
 	EndTime            time.Time `json:"endTime" db:"end_time"`
-	Email              string    `json:"email" db:"email"`
 }
 
 func (rb *postRespondentBody) ToRespondent() *model.Respondent {
@@ -64,6 +63,5 @@ func (rb *postRespondentBody) ToRespondent() *model.Respondent {
 		LanguagesSpoken:    fmt.Sprintf("%+q", rb.LanguagesSpoken),
 		StartTime:          rb.StartTime,
 		EndTime:            rb.EndTime,
-		Email:              rb.Email,
 	}
 }

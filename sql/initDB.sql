@@ -3,6 +3,7 @@ USE singlishwords;
 DROP TABLE IF EXISTS `answer`;
 DROP TABLE IF EXISTS `respondent`;
 DROP TABLE IF EXISTS `question`;
+DROP TABLE IF EXISTS `email`;
 
 -- ---------------------------------------
 --              CREATE TABLES
@@ -18,22 +19,33 @@ CREATE TABLE IF NOT EXISTS `respondent` (
     `country_of_birth`      VARCHAR(256) ,
     `country_of_residence`  VARCHAR(256) ,
     `ethnicity`             VARCHAR(256) ,
-    `is_native`             VARCHAR(4)     ,
+    `is_native`             VARCHAR(5)     ,
     `language_spoken`       TEXT,
     `start_time`            DATETIME        ,
     `end_time`              DATETIME        ,
-    `email`                 VARCHAR(320) ,
 
     PRIMARY KEY (`id`)
-);
+) CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `email` (
+--   name                   type            constraints
+    `email`                 VARCHAR(320),
+
+    `want_lucky_draw`       VARCHAR(5)     DEFAULT 'no',
+    `want_update`           VARCHAR(5)     DEFAULT 'no',
+    `time_on_pages`         TEXT
+
+) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `question` (
 --   name         type            constraints
     `id`          INT             NOT NULL      AUTO_INCREMENT,
     `word`        VARCHAR(128)    NOT NULL,
-    
+    `enable`      INT             DEFAULT 1,
+
+    UNIQUE (`word`),
     PRIMARY KEY (`id`)
-);
+) CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `answer` (
 --   name           type             constraints
@@ -49,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `answer` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`question_id`)  REFERENCES question(`id`),
     FOREIGN KEY (`respondent_id`) REFERENCES respondent(`id`)
-);
+) CHARSET=utf8;
 
 -- Init question data
 INSERT INTO `question` (`word`) VALUES
@@ -58,9 +70,9 @@ INSERT INTO `question` (`word`) VALUES
 -- Init one respondent
 INSERT INTO `respondent`
     (`age`, `gender`, `education`, `country_of_birth`, `country_of_residence`,
-    `ethnicity`, `is_native`, `language_spoken`, `start_time`, `end_time`, `email`)
+    `ethnicity`, `is_native`, `language_spoken`, `start_time`, `end_time`)
 VALUES (20, "male", "A Level", "Singapore", "Singapore", "Chinese", "yes", "English",
-         "2021-02-03 08:00:00", "2021-02-03 08:20:00", "example@gmail.com");
+         "2021-02-03 08:00:00", "2021-02-03 08:20:00");
 
 -- Init one answer
 INSERT INTO `answer` (`association1`, `association2`, `association3`, `time_spend`, `question_id`, `respondent_id`)

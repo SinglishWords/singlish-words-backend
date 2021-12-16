@@ -9,7 +9,7 @@ import (
 const (
 	sqlSaveQuestion    = "INSERT INTO question (id, word) VALUES (:id, :word);"
 	sqlGetQuestionById = "SELECT * FROM question WHERE id=?;"
-	sqlGetAllQuestions = "SELECT * FROM question;"
+	sqlGetAllQuestions = "SELECT * FROM question WHERE enable=1;"
 )
 
 type QuestionDAO struct{}
