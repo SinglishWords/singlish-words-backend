@@ -15,27 +15,36 @@ type QuestionCache struct{}
 var questionDAO dao.QuestionDAO
 
 func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, error) {
-	questions, err := cache.getNextRangeQuestionsFromRedis(limit)
-	if err == nil {
-		return questions, nil
-	}
+	// questions, err := cache.getNextRangeQuestionsFromRedis(limit)
+	// if err == nil {
+	// 	return questions, nil
+	// }
 
-	log.Logger.Warn("Cache get random questions, cache miss!")
+	// log.Logger.Warn("Cache get random questions, cache miss!")
 
 	// cache miss...
-	questions, err = questionDAO.GetAll()
+	log.Logger.Infof("Attempting to get weighted questions directly from db")
+	questions, err := questionDAO.GetWeightedQuestions(limit)
 	if err != nil {
 		log.Logger.Error("Mysql get random questions fail.")
 		return nil, err
 	}
 
-	err = cache.storeAllToRedis(questions)
-	if err != nil {
-		log.Logger.Warn("Store to redis cache error.")
-		return nil, err
+	for _, s := range questions {
+		err := questionDAO.UpdateCount(&s)
+		if err != nil {
+			log.Logger.Warnf("Error updating count")
+		}
 	}
 
-	return randomPickNQuestions(questions, limit), nil
+	// err = cache.storeAllToRedis(questions)
+	// if err != nil {
+	// 	log.Logger.Warn("Store to redis cache error.")
+	// 	return nil, err
+	// }
+
+	// return randomPickNQuestions(questions, limit), nil
+	return questions, err
 }
 
 func (QuestionCache) storeAllToRedis(questions []model.Question) error {
@@ -148,12 +157,47 @@ func randomPickNQuestions(questions []model.Question, n int) []model.Question {
 		n = length
 	}
 
+	maxi, err := questionDAO.GetMaxCount()
+	if err != nil {
+		log.Logger.Error("Error getting max count")
+	}
+
 	for n > 0 {
-		r := rand.Intn(length)
+		r := getRandomWeightedIndex(questions[:length], maxi)
 		questions[r], questions[length-1] = questions[length-1], questions[r]
 		length--
 		n--
 	}
 
+	a := questions[length:]
+
+	for _, s := range a {
+		err := questionDAO.UpdateCount(&s)
+		if err != nil {
+			log.Logger.Warnf("Error updating count")
+		}
+	}
+
 	return questions[length:]
+}
+
+func getRandomWeightedIndex(questions []model.Question, maxi int64) int {
+	res := make([]model.Question, 0)
+
+	for _, q := range questions {
+		var j int64 = 0
+		for j < maxi-q.Count {
+			res = append(res, q)
+			j++
+		}
+	}
+	all_length := len(res)
+	sel := res[rand.Intn(all_length)]
+	for i, q := range questions {
+		if q == sel {
+			return i
+		}
+	}
+
+	return 0
 }
