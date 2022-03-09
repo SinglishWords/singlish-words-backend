@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `question` (
   `id`          INT             NOT NULL      AUTO_INCREMENT,
   `word`        VARCHAR(128)    NOT NULL,
   `enable`      INT             DEFAULT 1,
+  `count`       INT             DEFAULT 1,
 
   UNIQUE (`word`),
   PRIMARY KEY (`id`)
