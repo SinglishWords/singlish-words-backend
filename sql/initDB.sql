@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS singlishwords;
 USE singlishwords;
 
 DROP TABLE IF EXISTS `answer`;
