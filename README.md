@@ -19,12 +19,16 @@ $ cd singlish-words-backend # to enter the directory
 
 Running and testing the backend on your [localhost](http://localhost) requires the installation of MySQL and Redis. The easiest way to install these is using Homebrew.
 
+If you do not have Homebrew installed, follow the instructions on [https://brew.sh](https://brew.sh) as a prerequisite for installing MySQL and Redis.
+
 ```bash
 $ brew install mysql
 $ brew install redis
 ```
 
 ## Initialise MySQL
+
+This step is important if you are setting up and initialising MySQL on your local system for local testing.
 
 If you have already initialised MySQL before, you can skip this step.
 
@@ -195,13 +199,18 @@ In order to ensure that there is an equal distribution of responses for each cue
 
 In `questionDAO`, the `GetWeightedQuestions(limit int)` method retrieves `limit` weighted random questions using weighted reservoir sampling:
 
-$$
-f(q)=\frac{-\log(\textrm{rand}([0,1]))}{\textrm{count}(q)}
-$$
+
+![equation](https://latex.codecogs.com/svg.image?f(q)=%5Cfrac%7B-%5Clog(%5Ctextrm%7Brand%7D(%5B0,1%5D))%7D%7B%5Ctextrm%7Bcount%7D(q)%7D%20)
 
 by taking the top `limit` entries in the table sorted by the $f$ value.
 
 This is equivalent to using the SQL query `SELECT * FROM question ORDER BY -LOG(RAND()) / count DESC LIMIT ?;`
+
+## Redis
+
+Redis functions have been written in the various services, in order to cache questions and allow faster retrieval. However, they are not currently being used as we wish to update the count every time a question is shown to the user.
+
+The potential risk with not using Redis is that the database will return a 408 Request Timeout. However, this will only occur if there are very large number of requests being made to the database at the same time (10,000 - 20,000 requests in a span of minutes), which is unlikely for this project.
 
 ## Updating answers and respondents
 
