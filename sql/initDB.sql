@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `respondent` (
     `country_of_birth`      VARCHAR(256) ,
     `country_of_residence`  VARCHAR(256) ,
     `ethnicity`             VARCHAR(256) ,
-    `uuid`                  VARCHAR(40) ,
+    `uuid`                  VARCHAR(64) ,
     `is_native`             VARCHAR(5)     ,
     `language_spoken`       TEXT,
     `start_time`            DATETIME        ,
