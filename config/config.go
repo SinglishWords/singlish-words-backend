@@ -73,6 +73,7 @@ func init() {
 
 	//viper.AddConfigPath("/etc/singlishwords/web/")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("../")
 	viper.AddConfigPath("/usr/local/etc/singlishwords/web/")
 
 	viper.SetConfigName("config")
