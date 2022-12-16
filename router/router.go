@@ -1,14 +1,16 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"singlishwords/config"
 	"singlishwords/controller/apiv1"
 	"singlishwords/controller/apiv1/answer"
+	"singlishwords/controller/apiv1/association"
 	"singlishwords/controller/apiv1/email"
 	"singlishwords/controller/apiv1/question"
 	"singlishwords/controller/apiv1/respondent"
 	"singlishwords/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 func InitRouter(g *gin.Engine) *gin.Engine {
@@ -34,6 +36,12 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 
 		// Email
 		v1.POST("/email", responseWrapper(email.PostEmail))
+
+		// Association
+		v1.GET("/associations/forward/:word", responseWrapper(association.GetForwardAssociations))
+		// v1.GET("/associations/backward/:word", responseWrapper(association.GetForwardAssociations))
+		// v1.GET("/associations/random/forward", responseWrapper(association.GetForwardAssociations))
+		// v1.GET("/associations/random/backward", responseWrapper(association.GetForwardAssociations))
 	}
 
 	return g

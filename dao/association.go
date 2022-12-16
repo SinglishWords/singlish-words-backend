@@ -1,9 +1,11 @@
 package dao
 
 import (
+	"fmt"
 	"singlishwords/database"
 	"singlishwords/log"
 	"singlishwords/model"
+	"strings"
 )
 
 const (
@@ -20,7 +22,7 @@ const (
 
 type AssociationDAO struct{}
 
-func (o AssociationDAO) GetAssociationsByQid(q string) ([]model.Association, error) {
+func (o AssociationDAO) GetAssociationsBySource(q string) ([]model.Association, error) {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
@@ -43,6 +45,29 @@ func (o AssociationDAO) GetAssociation(q, associatedWord string) (*model.Associa
 	var association model.Association
 	err = db.Get(&association, sqlGetAssociation, q, associatedWord)
 	return &association, err
+}
+
+func joinWithQuotes(arr []string) string {
+	var sb strings.Builder
+	for i, s := range arr {
+		sb.WriteString(fmt.Sprintf("'%s'", s))
+		if i < len(arr)-1 {
+			sb.WriteString(",")
+		}
+	}
+	return sb.String()
+}
+
+func (o AssociationDAO) MultiSelect(sources []string) ([]model.Association, error) {
+	db, err := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return nil, notConnectedError{}
+	}
+
+	var associations []model.Association
+	err = db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE source IN (%s);", joinWithQuotes(sources)))
+	return associations, err
 }
 
 func (o AssociationDAO) IncrementAssociationBy(q string, associatedWord string, inc int64) error {
