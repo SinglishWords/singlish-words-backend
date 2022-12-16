@@ -11,7 +11,7 @@ import (
 const (
 	sqlGetForwardAssociations = `SELECT q.id, q.word, a.association1, a.association2, a.association3 
 									FROM question AS q JOIN answer AS a ON q.id=a.question_id 
-									WHERE q.id=?;`
+									WHERE q.word=?;`
 )
 
 type forwardAssociationTriplet struct {
@@ -22,7 +22,7 @@ type forwardAssociationTriplet struct {
 	Association3 string        `db:"association3"`
 }
 
-func getForwardAssociations(qid int64) ([]forwardAssociationTriplet, error) {
+func getForwardAssociations(q string) ([]forwardAssociationTriplet, error) {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
@@ -30,7 +30,7 @@ func getForwardAssociations(qid int64) ([]forwardAssociationTriplet, error) {
 	}
 
 	var associations []forwardAssociationTriplet
-	err = db.Select(&associations, sqlGetForwardAssociations, qid)
+	err = db.Select(&associations, sqlGetForwardAssociations, q)
 	return associations, err
 }
 
@@ -57,6 +57,7 @@ func countAssociationsFrequencies(associations []forwardAssociationTriplet) map[
 
 var answerDAO = dao.AnswerDAO{}
 var associationDAO = dao.AssociationDAO{}
+var questionDAO = dao.QuestionDAO{}
 
 func main() {
 	err := run()
@@ -73,10 +74,12 @@ func run() error {
 	}
 	
 	
-	var qid int64
 	for _, ans := range answers {
-		qid = ans.QuestionId
-		associations, err := getForwardAssociations(qid)
+		q, err := questionDAO.GetById(ans.QuestionId)
+		if err != nil {
+			return err
+		}
+		associations, err := getForwardAssociations(q.Word)
 		if err != nil {
 			return err
 		}
@@ -89,7 +92,7 @@ func run() error {
 			fmt.Println("association:", association)
 			fmt.Println("count:", count)
 			fmt.Println("------")
-			err = associationDAO.IncrementAssociationBy(qid, association, count)
+			err = associationDAO.IncrementAssociationBy(q.Word, association, count)
 			if err != nil {
 				return err
 			}

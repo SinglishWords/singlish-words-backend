@@ -7,20 +7,20 @@ import (
 )
 
 const (
-	sqlGetAssociationsByQid = `SELECT * FROM association WHERE question_id=?;`
-	sqlGetAssociation = `SELECT * FROM association WHERE question_id=? AND association=?;`
+	sqlGetAssociationsBySource = `SELECT * FROM association WHERE source=?;`
+	sqlGetAssociation = `SELECT * FROM association WHERE source=? AND target=?;`
 	sqlInsertAssociation  = `INSERT INTO association 
-						(question_id, association, count)
+						(source, target, count)
 						VALUES 
-						(:question_id, :association, :count);`
+						(:source, :target, :count);`
 	sqlUpdateAssociation  = `UPDATE association SET
 						count=?
-						WHERE question_id=? AND association=?;`
+						WHERE source=? AND target=?;`
 )
 
 type AssociationDAO struct{}
 
-func (o AssociationDAO) GetAssociationsByQid(qid int64) ([]model.Association, error) {
+func (o AssociationDAO) GetAssociationsByQid(q string) ([]model.Association, error) {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
@@ -28,12 +28,12 @@ func (o AssociationDAO) GetAssociationsByQid(qid int64) ([]model.Association, er
 	}
 
 	var associations []model.Association
-	err = db.Select(&associations, sqlGetAssociationsByQid, qid)
+	err = db.Select(&associations, sqlGetAssociationsBySource, q)
 	return associations, err
 }
 
 
-func (o AssociationDAO) GetAssociation(qid int64, associatedWord string) (*model.Association, error) {
+func (o AssociationDAO) GetAssociation(q, associatedWord string) (*model.Association, error) {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
@@ -41,11 +41,11 @@ func (o AssociationDAO) GetAssociation(qid int64, associatedWord string) (*model
 	}
 
 	var association model.Association
-	err = db.Get(&association, sqlGetAssociation, qid, associatedWord)
+	err = db.Get(&association, sqlGetAssociation, q, associatedWord)
 	return &association, err
 }
 
-func (o AssociationDAO) IncrementAssociationBy(qid int64, associatedWord string, inc int64) error {
+func (o AssociationDAO) IncrementAssociationBy(q string, associatedWord string, inc int64) error {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
@@ -53,10 +53,10 @@ func (o AssociationDAO) IncrementAssociationBy(qid int64, associatedWord string,
 	}
 
 	var association model.Association
-	err = db.Get(&association, sqlGetAssociation, qid, associatedWord)
+	err = db.Get(&association, sqlGetAssociation, q, associatedWord)
 	if err != nil {
 		// If empty, create an entry that starts with count = 0
-		association = model.Association{QuestionId: qid, Association: associatedWord, Count: 0}
+		association = model.Association{Source: q, Target: associatedWord, Count: 0}
 		res, err := db.NamedExec(sqlInsertAssociation, association)
 		if err != nil {
 			return err
@@ -66,7 +66,7 @@ func (o AssociationDAO) IncrementAssociationBy(qid int64, associatedWord string,
 
 	newCount := association.Count + inc
 
-	_, err = db.Exec(sqlUpdateAssociation, newCount, qid, associatedWord)
+	_, err = db.Exec(sqlUpdateAssociation, newCount, q, associatedWord)
 	log.Logger.Infof("Incremented association count by: %d", inc)
 	return err
 }

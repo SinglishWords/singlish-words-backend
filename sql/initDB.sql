@@ -70,12 +70,11 @@ CREATE TABLE IF NOT EXISTS `answer` (
 CREATE TABLE IF NOT EXISTS `association` (
 --   name                   type            constraints
     `id`                    INT             NOT NULL    AUTO_INCREMENT,
-    `question_id`           INT             NOT NULL,
-    `association`           VARCHAR(256)    NOT NULL,
+    `source`                VARCHAR(256)    NOT NULL,
+    `target`                VARCHAR(256)    NOT NULL,
     `count`                 INT             NOT NULL,
 
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`question_id`)  REFERENCES question(`id`),
-    UNIQUE INDEX forward_association (`question_id`, `association`),
-    UNIQUE INDEX backward_association (`association`, `question_id`)
+    UNIQUE INDEX forward_association (`source`, `target`),
+    UNIQUE INDEX backward_association (`target`, `source`)
 ) CHARSET=utf8;

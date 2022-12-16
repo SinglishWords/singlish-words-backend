@@ -2,8 +2,8 @@ package model
 
 type Association struct {
 	Id           	int64	`db:"id"`
-	QuestionId   	int64	`db:"question_id"`
-	Association 	string	`db:"association"`
+	Source   		string	`db:"source"`
+	Target 			string	`db:"target"`
 	Count 			int64	`db:"count"`
 }
 
