@@ -23,27 +23,28 @@ const (
 type AssociationDAO struct{}
 
 func (o AssociationDAO) GetAssociationsBySource(q string) ([]model.Association, error) {
-	db, err := database.GetMySqlDB()
+	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 
 	var associations []model.Association
-	err = db.Select(&associations, sqlGetAssociationsBySource, q)
+	err := db.Select(&associations, sqlGetAssociationsBySource, q)
+	log.Logger.Infof("Executing GetAssociationsBySource: %+v", associations)
 	return associations, err
 }
 
 
 func (o AssociationDAO) GetAssociation(q, associatedWord string) (*model.Association, error) {
-	db, err := database.GetMySqlDB()
+	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 
 	var association model.Association
-	err = db.Get(&association, sqlGetAssociation, q, associatedWord)
+	err := db.Get(&association, sqlGetAssociation, q, associatedWord)
 	return &association, err
 }
 
@@ -58,27 +59,28 @@ func joinWithQuotes(arr []string) string {
 	return sb.String()
 }
 
-func (o AssociationDAO) MultiSelect(sources []string) ([]model.Association, error) {
-	db, err := database.GetMySqlDB()
+func (o AssociationDAO) MultiSelectBySource(sources []string) ([]model.Association, error) {
+	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 
 	var associations []model.Association
-	err = db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE source IN (%s);", joinWithQuotes(sources)))
+	err := db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE source IN (%s);", joinWithQuotes(sources)))
+	log.Logger.Infof("Executing MultiSelectBySource: %+v", associations)
 	return associations, err
 }
 
 func (o AssociationDAO) IncrementAssociationBy(q string, associatedWord string, inc int64) error {
-	db, err := database.GetMySqlDB()
+	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return notConnectedError{}
 	}
 
 	var association model.Association
-	err = db.Get(&association, sqlGetAssociation, q, associatedWord)
+	err := db.Get(&association, sqlGetAssociation, q, associatedWord)
 	if err != nil {
 		// If empty, create an entry that starts with count = 0
 		association = model.Association{Source: q, Target: associatedWord, Count: 0}
