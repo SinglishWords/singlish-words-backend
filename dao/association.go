@@ -84,16 +84,16 @@ func (o AssociationDAO) IncrementAssociationBy(q string, associatedWord string, 
 	if err != nil {
 		// If empty, create an entry that starts with count = 0
 		association = model.Association{Source: q, Target: associatedWord, Count: 0}
-		res, err := db.NamedExec(sqlInsertAssociation, association)
+		_, err := db.NamedExec(sqlInsertAssociation, association)
 		if err != nil {
 			return err
 		}
-		log.Logger.Infof("Created new association: %+v", res)
+		log.Logger.Infof("Created new association '%s' -> '%s'", q, associatedWord)
 	}
 
 	newCount := association.Count + inc
 
 	_, err = db.Exec(sqlUpdateAssociation, newCount, q, associatedWord)
-	log.Logger.Infof("Incremented association count by: %d", inc)
+	log.Logger.Infof("Incremented association count of '%s' -> '%s' by: %d", q, associatedWord, inc)
 	return err
 }

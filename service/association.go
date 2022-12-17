@@ -82,3 +82,7 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 	allAssociations := append(associations, validNeighborsAssociations...)
 	return marshal(set, allAssociations)
 }
+
+func IncrementAssociationCount(q string, associatedWord string, inc int64) error {
+	return associationDAO.IncrementAssociationBy(q, associatedWord, inc)
+}

@@ -29,3 +29,8 @@ func GetAllQuestions() ([]model.Question, error) {
 	}
 	return questions, nil
 }
+
+func GetQuestionById(id int64) (*model.Question, error) {
+	questionDAO := dao.QuestionDAO{}
+	return questionDAO.GetById(id)
+}

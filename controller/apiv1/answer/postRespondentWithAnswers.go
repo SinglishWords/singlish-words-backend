@@ -2,11 +2,12 @@ package answer
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"singlishwords/controller/apiv1"
 	"singlishwords/model"
 	"singlishwords/service"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // PostRespondentWithAnswers godoc
@@ -29,10 +30,21 @@ func PostRespondentWithAnswers(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 
 	r, as := rb.ToModels()
 	r, err = service.AddRespondentAndAnswersTogether(r, as)
-
 	if err != nil {
 		code = apiv1.StatusFail(err.Error())
 		return code, nil
+	}
+
+	for _, a := range rb.Answers {
+		for _, resp := range a.Responses {
+			if resp != "" {
+				err = service.IncrementAssociationCount(a.Question.Word, resp, 1)
+				if err != nil {
+					code = apiv1.StatusFail(err.Error())
+					return code, nil
+				}
+			}			
+		}
 	}
 
 	return apiv1.StatusCreated, r

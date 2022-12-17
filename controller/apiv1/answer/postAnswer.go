@@ -1,11 +1,12 @@
 package answer
 
 import (
-	"github.com/gin-gonic/gin"
 	"singlishwords/controller/apiv1"
 	"singlishwords/model"
 	"singlishwords/service"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type paramPostSingleAnswer struct {
@@ -45,9 +46,22 @@ func PostAnswer(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 
 	answer := param.ToAnswer()
 	err = service.PostAnswer(answer)
-
 	if err != nil {
 		return apiv1.StatusFail(err.Error()), nil
+	}
+
+	q, err := service.GetQuestionById(param.QuestionId)
+	if err != nil {
+		return apiv1.StatusFail(err.Error()), nil
+	}
+
+	for _, resp := range param.Responses {
+		if resp != "" {
+			err = service.IncrementAssociationCount(q.Word, resp, 1)
+			if err != nil {
+				return apiv1.StatusFail(err.Error()), nil
+			}
+		}			
 	}
 
 	return apiv1.StatusCreated, answer
