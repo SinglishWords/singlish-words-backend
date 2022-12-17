@@ -65,7 +65,7 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 
 func createSetAndNeighbors(associations []model.Association) (map[string]int, []string) {
 	m := make(map[string]int)
-	n := make([]string, len(associations)-1)
+	n := make([]string, 0, len(associations))
 
 	for _, a := range associations {
 		n = append(n, a.Target)
@@ -86,7 +86,7 @@ func createSetAndNeighbors(associations []model.Association) (map[string]int, []
 
 func createSetAndBackwardNeighbors(associations []model.Association) (map[string]int, []string) {
 	m := make(map[string]int)
-	n := make([]string, len(associations)-1)
+	n := make([]string, 0, len(associations))
 
 	for _, a := range associations {
 		n = append(n, a.Source)
