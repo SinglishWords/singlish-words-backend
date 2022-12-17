@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"singlishwords/dao"
 	"singlishwords/log"
 	"singlishwords/model"
@@ -8,14 +9,21 @@ import (
 
 var associationDAO = dao.AssociationDAO{}
 
-func marshal(set map[string]int, associations []model.Association) (*Visualisation, error) {
-	nodes := make([]model.Node, len(associations))
-	links := make([]model.Link, len(associations))
+func marshalForwardAssociations(set map[string]int, associations []model.Association) (*Visualisation, error) {
+	nodes := make([]model.Node, 0, len(associations))
+	links := make([]model.Link, 0, len(associations))
 	ids := make(map[string]int64)
 
 	var i int64 = 0
 	for word := range set {
-		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: 0, Value: 0, Category: 0})
+		// Given a word x -> y, the value of y is the number of times the forward association
+		// is thought of when the word x is given
+		value, err := associationDAO.CountForwardAssociation(word)
+		if err != nil {
+			return nil, err
+		}
+
+		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: value, Value: value, Category: 0})
 		ids[word] = i
 		i++
 	}
@@ -27,12 +35,61 @@ func marshal(set map[string]int, associations []model.Association) (*Visualisati
 	return &Visualisation{Nodes: nodes, Links: links, Categories: []model.Category{}}, nil
 }
 
+func marshalBackwardAssociations(set map[string]int, associations []model.Association) (*Visualisation, error) {
+	nodes := make([]model.Node, 0, len(associations))
+	links := make([]model.Link, 0, len(associations))
+	ids := make(map[string]int64)
+
+	var i int64 = 0
+	for word := range set {
+		// Given a word x -> y, the value of y is the number of times the forward association
+		// is thought of when the word x is given
+		value, err := associationDAO.CountBackwardAssociation(word)
+		if err != nil {
+			return nil, err
+		}
+
+		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: value, Value: value, Category: 0})
+		ids[word] = i
+		i++
+	}
+
+	// TODO: Fix backwards association
+	for _, association := range associations {
+		fmt.Println("association", association)
+		links = append(links, model.Link{Source: ids[association.Target], Target: ids[association.Source]})
+	}
+
+	return &Visualisation{Nodes: nodes, Links: links, Categories: []model.Category{}}, nil
+}
+
 func createSetAndNeighbors(associations []model.Association) (map[string]int, []string) {
 	m := make(map[string]int)
 	n := make([]string, len(associations)-1)
 
 	for _, a := range associations {
 		n = append(n, a.Target)
+
+		_, ok := m[a.Source]
+		if !ok {
+			m[a.Source] = 1
+		}
+
+		_, ok = m[a.Target]
+		if !ok {
+			m[a.Target] = 1
+		}
+	}
+
+	return m, n
+}
+
+func createSetAndBackwardNeighbors(associations []model.Association) (map[string]int, []string) {
+	m := make(map[string]int)
+	n := make([]string, len(associations)-1)
+
+	for _, a := range associations {
+		n = append(n, a.Source)
 
 		_, ok := m[a.Source]
 		if !ok {
@@ -73,6 +130,7 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 
 	validNeighborsAssociations := make([]model.Association, 0, len(neighborsAssociations))
 	for _, association := range neighborsAssociations {
+		// Valid association iff target is in the set of nodes
 		_, ok := set[association.Target]
 		if ok {
 			validNeighborsAssociations = append(validNeighborsAssociations, association)
@@ -80,7 +138,37 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 	}
 
 	allAssociations := append(associations, validNeighborsAssociations...)
-	return marshal(set, allAssociations)
+	return marshalForwardAssociations(set, allAssociations)
+}
+
+func GetBackwardAssociations(word string) (*Visualisation, error) {
+	// Get set of words: queried word, and all 1-away backward neighbors of the queried word
+	associations, err := associationDAO.GetBackwardAssociationsBySource(word)
+	if err != nil {
+		return nil, err
+	}
+
+	set, backwardNeighbors := createSetAndBackwardNeighbors(associations)
+	log.Logger.Infof("Set of words: %+v", set)
+	log.Logger.Infof("First-degree backward neighbors of '%s': %+v", word, set)
+
+	// Get all associations where source in [...backwardNeighbors]
+	neighborsAssociations, err := associationDAO.MultiSelectBySource(backwardNeighbors)
+	if err != nil {
+		return nil, err
+	}
+
+	validNeighborsAssociations := make([]model.Association, 0, len(neighborsAssociations))
+	for _, association := range neighborsAssociations {
+		// Valid association iff source is in the set of nodes
+		_, ok := set[association.Source]
+		if ok {
+			validNeighborsAssociations = append(validNeighborsAssociations, association)
+		}
+	}
+
+	allAssociations := append(associations, validNeighborsAssociations...)
+	return marshalBackwardAssociations(set, allAssociations)
 }
 
 func IncrementAssociationCount(q string, associatedWord string, inc int64) error {

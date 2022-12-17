@@ -10,7 +10,10 @@ import (
 
 const (
 	sqlGetAssociationsBySource = `SELECT * FROM association WHERE source=?;`
+	sqlGetBackwardAssociationsBySource = `SELECT * FROM association WHERE target=?;`
 	sqlGetAssociation = `SELECT * FROM association WHERE source=? AND target=?;`
+	sqlCountForwardAssociation = `SELECT COALESCE(SUM(count), -1) AS count FROM association WHERE target=?;`
+	sqlCountBackwardAssociation = `SELECT COALESCE(SUM(count), -1) AS count FROM association WHERE source=?;`
 	sqlInsertAssociation  = `INSERT INTO association 
 						(source, target, count)
 						VALUES 
@@ -32,6 +35,19 @@ func (o AssociationDAO) GetAssociationsBySource(q string) ([]model.Association, 
 	var associations []model.Association
 	err := db.Select(&associations, sqlGetAssociationsBySource, q)
 	log.Logger.Infof("Executing GetAssociationsBySource: %+v", associations)
+	return associations, err
+}
+
+func (o AssociationDAO) GetBackwardAssociationsBySource(q string) ([]model.Association, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return nil, notConnectedError{}
+	}
+
+	var associations []model.Association
+	err := db.Select(&associations, sqlGetBackwardAssociationsBySource, q)
+	log.Logger.Infof("Executing GetBackwardAssociationsBySource: %+v", associations)
 	return associations, err
 }
 
@@ -96,4 +112,34 @@ func (o AssociationDAO) IncrementAssociationBy(q string, associatedWord string, 
 	_, err = db.Exec(sqlUpdateAssociation, newCount, q, associatedWord)
 	log.Logger.Infof("Incremented association count of '%s' -> '%s' by: %d", q, associatedWord, inc)
 	return err
+}
+
+type Count struct {
+	N int64	`db:"count"`
+}
+
+func (o AssociationDAO) CountForwardAssociation(q string) (int64, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return -1, notConnectedError{}
+	}
+
+	var count Count
+	err := db.Get(&count, sqlCountForwardAssociation, q)
+	log.Logger.Infof("Executed CountForwardAssociation for '%s': %d", q, count.N)
+	return count.N, err
+}
+
+func (o AssociationDAO) CountBackwardAssociation(q string) (int64, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return -1, notConnectedError{}
+	}
+
+	var count Count
+	err := db.Get(&count, sqlCountBackwardAssociation, q)
+	log.Logger.Infof("Executed CountBackwardAssociation for '%s': %d", q, count.N)
+	return count.N, err
 }
