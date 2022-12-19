@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"singlishwords/dao"
 	"singlishwords/log"
 	"singlishwords/model"
@@ -65,9 +64,7 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		i++
 	}
 
-	// TODO: Fix backwards association
 	for _, association := range associations {
-		fmt.Println("association", association)
 		links = append(links, model.Link{Source: ids[association.Target], Target: ids[association.Source]})
 	}
 
