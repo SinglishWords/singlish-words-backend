@@ -12,8 +12,8 @@ const (
 	sqlGetAssociationsBySource = `SELECT * FROM association WHERE source=?;`
 	sqlGetBackwardAssociationsBySource = `SELECT * FROM association WHERE target=?;`
 	sqlGetAssociation = `SELECT * FROM association WHERE source=? AND target=?;`
-	sqlCountForwardAssociation = `SELECT COALESCE(SUM(count), -1) AS count FROM association WHERE target=?;`
-	sqlCountBackwardAssociation = `SELECT COALESCE(SUM(count), -1) AS count FROM association WHERE source=?;`
+	sqlCountForwardAssociation = `SELECT COALESCE(SUM(count), 0) AS count FROM association WHERE target=?;`
+	sqlCountBackwardAssociation = `SELECT COALESCE(SUM(count), 0) AS count FROM association WHERE source=?;`
 	sqlInsertAssociation  = `INSERT INTO association 
 						(source, target, count)
 						VALUES 
