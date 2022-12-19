@@ -52,6 +52,7 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		// is thought of when the word x is given
 		value, err := associationDAO.CountBackwardAssociation(word)
 		if err != nil {
+			log.Logger.Error(err)
 			return nil, err
 		}
 		symbolSize := value
@@ -123,6 +124,7 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 	// Get set of words: queried word, and all 1-away neighbors of the queried word
 	associations, err := associationDAO.GetAssociationsBySource(word)
 	if err != nil {
+		log.Logger.Error(err)
 		return nil, err
 	}
 
@@ -133,6 +135,7 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 	// Get all associations where source in [...neighbors]
 	neighborsAssociations, err := associationDAO.MultiSelectBySource(neighbors)
 	if err != nil {
+		log.Logger.Error(err)
 		return nil, err
 	}
 
@@ -153,6 +156,7 @@ func GetBackwardAssociations(word string) (*Visualisation, error) {
 	// Get set of words: queried word, and all 1-away backward neighbors of the queried word
 	associations, err := associationDAO.GetBackwardAssociationsBySource(word)
 	if err != nil {
+		log.Logger.Error(err)
 		return nil, err
 	}
 
@@ -163,6 +167,7 @@ func GetBackwardAssociations(word string) (*Visualisation, error) {
 	// Get all associations where target in [...backwardNeighbors]
 	neighborsAssociations, err := associationDAO.MultiSelectByTarget(backwardNeighbors)
 	if err != nil {
+		log.Logger.Error(err)
 		return nil, err
 	}
 

@@ -14,6 +14,7 @@ const (
 	sqlMaxCount        = "SELECT MAX(count) FROM question"
 	sqlGetWeighed      = "SELECT * FROM question ORDER BY -LOG(RAND()) / count DESC LIMIT ?;"
 	sqlEntries         = "SELECT COUNT(id) FROM questions"
+	sqlGetRandom	   = "SELECT * FROM question ORDER BY RAND() LIMIT 1;"
 )
 
 type QuestionDAO struct{}
@@ -92,6 +93,17 @@ func (o QuestionDAO) GetById(id int64) (*model.Question, error) {
 	}
 	var question model.Question
 	err = db.Get(&question, sqlGetQuestionById, id)
+	return &question, err
+}
+
+func (o QuestionDAO) GetRandom() (*model.Question, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return nil, notConnectedError{}
+	}
+	var question model.Question
+	err := db.Get(&question, sqlGetRandom)
 	return &question, err
 }
 
