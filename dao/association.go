@@ -94,6 +94,11 @@ func (o AssociationDAO) MultiSelectBySource(sources []string) ([]model.Associati
 }
 
 func (o AssociationDAO) MultiSelectByTarget(sources []string) ([]model.Association, error) {
+	if len(sources) == 0 {
+		log.Logger.Info("Slice length is 0, not executing MultiSelectBySource")
+		return make([]model.Association, 0), nil
+	}
+
 	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")

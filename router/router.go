@@ -41,7 +41,7 @@ func InitRouter(g *gin.Engine) *gin.Engine {
 		v1.GET("/associations/forward/:word", responseWrapper(association.GetForwardAssociations))
 		v1.GET("/associations/backward/:word", responseWrapper(association.GetBackwardAssociations))
 		v1.GET("/associations/random/forward", responseWrapper(association.GetRandomWordForwardAssociations))
-		// v1.GET("/associations/random/backward", responseWrapper(association.GetForwardAssociations))
+		v1.GET("/associations/random/backward", responseWrapper(association.GetRandomWordBackwardAssociations))
 	}
 
 	return g
