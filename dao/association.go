@@ -88,6 +88,19 @@ func (o AssociationDAO) MultiSelectBySource(sources []string) ([]model.Associati
 	return associations, err
 }
 
+func (o AssociationDAO) MultiSelectByTarget(sources []string) ([]model.Association, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return nil, notConnectedError{}
+	}
+
+	var associations []model.Association
+	err := db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE target IN (%s);", joinWithQuotes(sources)))
+	log.Logger.Infof("Executing MultiSelectByTarget: %+v", associations)
+	return associations, err
+}
+
 func (o AssociationDAO) IncrementAssociationBy(q string, associatedWord string, inc int64) error {
 	db, _ := database.GetMySqlDB()
 	if db == nil {

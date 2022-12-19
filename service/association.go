@@ -120,7 +120,7 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 
 	set, neighbors := createSetAndNeighbors(associations)
 	log.Logger.Infof("Set of words: %+v", set)
-	log.Logger.Infof("First-degree neighbors of '%s': %+v", word, set)
+	log.Logger.Infof("First-degree neighbors of '%s': %+v", word, neighbors)
 
 	// Get all associations where source in [...neighbors]
 	neighborsAssociations, err := associationDAO.MultiSelectBySource(neighbors)
@@ -150,17 +150,16 @@ func GetBackwardAssociations(word string) (*Visualisation, error) {
 
 	set, backwardNeighbors := createSetAndBackwardNeighbors(associations)
 	log.Logger.Infof("Set of words: %+v", set)
-	log.Logger.Infof("First-degree backward neighbors of '%s': %+v", word, set)
+	log.Logger.Infof("First-degree backward neighbors of '%s': %+v", word, backwardNeighbors)
 
-	// Get all associations where source in [...backwardNeighbors]
-	neighborsAssociations, err := associationDAO.MultiSelectBySource(backwardNeighbors)
+	// Get all associations where target in [...backwardNeighbors]
+	neighborsAssociations, err := associationDAO.MultiSelectByTarget(backwardNeighbors)
 	if err != nil {
 		return nil, err
 	}
 
 	validNeighborsAssociations := make([]model.Association, 0, len(neighborsAssociations))
 	for _, association := range neighborsAssociations {
-		// Valid association iff source is in the set of nodes
 		_, ok := set[association.Source]
 		if ok {
 			validNeighborsAssociations = append(validNeighborsAssociations, association)
