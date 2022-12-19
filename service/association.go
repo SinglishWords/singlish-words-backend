@@ -7,9 +7,12 @@ import (
 	"singlishwords/model"
 )
 
+// Queried node have the largest symbolSize for visualization purposes
+const queriedNodeSymbolSize = 10000000000
+
 var associationDAO = dao.AssociationDAO{}
 
-func marshalForwardAssociations(set map[string]int, associations []model.Association) (*Visualisation, error) {
+func marshalForwardAssociations(set map[string]int, associations []model.Association, queriedWord string) (*Visualisation, error) {
 	nodes := make([]model.Node, 0, len(associations))
 	links := make([]model.Link, 0, len(associations))
 	ids := make(map[string]int64)
@@ -22,8 +25,12 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 		if err != nil {
 			return nil, err
 		}
+		symbolSize := value
+		if word == queriedWord {
+			symbolSize = queriedNodeSymbolSize
+		}
 
-		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: value, Value: value, Category: 0})
+		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: symbolSize, Value: value, Category: 0})
 		ids[word] = i
 		i++
 	}
@@ -35,7 +42,7 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 	return &Visualisation{Nodes: nodes, Links: links, Categories: []model.Category{}}, nil
 }
 
-func marshalBackwardAssociations(set map[string]int, associations []model.Association) (*Visualisation, error) {
+func marshalBackwardAssociations(set map[string]int, associations []model.Association, queriedWord string) (*Visualisation, error) {
 	nodes := make([]model.Node, 0, len(associations))
 	links := make([]model.Link, 0, len(associations))
 	ids := make(map[string]int64)
@@ -48,8 +55,12 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		if err != nil {
 			return nil, err
 		}
+		symbolSize := value
+		if word == queriedWord {
+			symbolSize = queriedNodeSymbolSize
+		}
 
-		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: value, Value: value, Category: 0})
+		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: symbolSize, Value: value, Category: 0})
 		ids[word] = i
 		i++
 	}
@@ -138,7 +149,7 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 	}
 
 	allAssociations := append(associations, validNeighborsAssociations...)
-	return marshalForwardAssociations(set, allAssociations)
+	return marshalForwardAssociations(set, allAssociations, word)
 }
 
 func GetBackwardAssociations(word string) (*Visualisation, error) {
@@ -167,7 +178,7 @@ func GetBackwardAssociations(word string) (*Visualisation, error) {
 	}
 
 	allAssociations := append(associations, validNeighborsAssociations...)
-	return marshalBackwardAssociations(set, allAssociations)
+	return marshalBackwardAssociations(set, allAssociations, word)
 }
 
 func IncrementAssociationCount(q string, associatedWord string, inc int64) error {
