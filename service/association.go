@@ -116,8 +116,8 @@ func createSetAndBackwardNeighbors(associations []model.Association) (map[string
 
 type Visualisation struct {
 	Nodes 		[]model.Node `json:"nodes"`
-	Links 		[]model.Link `json: "links"`
-	Categories 	[]model.Category `json: "categories"`
+	Links 		[]model.Link `json:"links"`
+	Categories 	[]model.Category `json:"categories"`
 }
 
 func GetForwardAssociations(word string) (*Visualisation, error) {
