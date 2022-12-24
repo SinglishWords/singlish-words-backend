@@ -67,7 +67,7 @@ func (o AssociationDAO) GetAssociation(q, associatedWord string) (*model.Associa
 func joinWithQuotes(arr []string) string {
 	var sb strings.Builder
 	for i, s := range arr {
-		sb.WriteString(fmt.Sprintf("'%s'", s))
+		sb.WriteString(fmt.Sprintf("\"%s\"", s))
 		if i < len(arr)-1 {
 			sb.WriteString(",")
 		}
