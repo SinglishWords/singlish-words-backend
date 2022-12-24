@@ -4,6 +4,7 @@ import (
 	"singlishwords/controller/apiv1"
 	"singlishwords/model"
 	"singlishwords/service"
+	"singlishwords/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,13 @@ func PostAnswer(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 
 	if err != nil {
 		return apiv1.StatusPostParamError, err
+	}
+
+	// Clean up users' answers
+	for i, resp := range param.Responses {
+		if resp != "" {
+			param.Responses[i] = utils.CleanUpAnswer(resp)
+		}			
 	}
 
 	answer := param.ToAnswer()

@@ -18,7 +18,7 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 
 	var i int64 = 0
 	for word := range set {
-		// Given a word x -> y, the value of y is the number of times the forward association
+		// Given a word x, the value of x is the number of times the forward association ... -> x
 		// is thought of when the word x is given
 		value, err := associationDAO.CountForwardAssociation(word)
 		if err != nil {
@@ -48,8 +48,8 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 
 	var i int64 = 0
 	for word := range set {
-		// Given a word x -> y, the value of y is the number of times the forward association
-		// is thought of when the word x is given
+		// Given a word x, the value of x is the number of times the forward association x -> ...
+		// comes up. 
 		value, err := associationDAO.CountBackwardAssociation(word)
 		if err != nil {
 			log.Logger.Error(err)
