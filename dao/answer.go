@@ -12,6 +12,7 @@ const (
 						(association1, association2, association3, time_spend, question_id, respondent_id)
 						VALUES 
 						(:association1, :association2, :association3, :time_spend, :question_id, :respondent_id);`
+	sqlUpdateAnswer = `UPDATE answer SET association1=:association1, association2=:association2, association3=:association3 WHERE id=:id;`
 )
 
 type AnswerDAO struct{}
@@ -54,5 +55,19 @@ func (o AnswerDAO) SaveAll(answers []model.Answer) error {
 	}
 	_, err = db.NamedExec(sqlInsertAnswer, answers)
 	log.Logger.Infof("Saved %d answers to database.", len(answers))
+	return err
+}
+
+func (o AnswerDAO) UpdateAssociations(answer *model.Answer) error {
+	db, err := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return notConnectedError{}
+	}
+	_, err = db.NamedExec(sqlUpdateAnswer, answer)
+	if err != nil {
+		return err
+	}
+	log.Logger.Infof("Updated answer %d", answer.Id)
 	return err
 }

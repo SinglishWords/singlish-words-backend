@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"singlishwords/dao"
 	"singlishwords/database"
 	"singlishwords/log"
@@ -59,15 +58,7 @@ var answerDAO = dao.AnswerDAO{}
 var associationDAO = dao.AssociationDAO{}
 var questionDAO = dao.QuestionDAO{}
 
-func main() {
-	err := run()
-	if err != nil {
-		fmt.Println("Error", err)
-		os.Exit(1)
-	}
-}
-
-func run() error {
+func createAssociations() error {
 	answers, err := answerDAO.GetAll()
 	if err != nil {
 		return err
