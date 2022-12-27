@@ -23,3 +23,8 @@ type Link struct {
 type Category struct {
 	Name string `json:"name"`
 }
+
+type AssociationValue struct {
+	Word string `db:"word"`
+	Count int64 `db:"count"`
+}

@@ -15,15 +15,24 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 	nodes := make([]model.Node, 0, len(associations))
 	links := make([]model.Link, 0, len(associations))
 	ids := make(map[string]int64)
-
+	
+	words := make([]string, len(set))
 	var i int64 = 0
 	for word := range set {
-		// Given a word x, the value of x is the number of times the forward association ... -> x
-		// is thought of when the word x is given
-		value, err := associationDAO.CountForwardAssociation(word)
-		if err != nil {
-			return nil, err
-		}
+		words[i] = word
+		i++
+	}
+
+	// Given a word x, the value of x is the number of times the forward association ... -> x
+	// is thought of when the word x is given
+	associationsValue, err := associationDAO.CountForwardAssociations(words)
+	if err != nil {
+		return nil, err
+	}
+
+	i = 0
+	for _, av := range associationsValue {
+		word, value := av.Word, av.Count
 		symbolSize := value
 		if word == queriedWord {
 			symbolSize = queriedNodeSymbolSize
@@ -46,15 +55,23 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 	links := make([]model.Link, 0, len(associations))
 	ids := make(map[string]int64)
 
+	words := make([]string, len(set))
 	var i int64 = 0
 	for word := range set {
-		// Given a word x, the value of x is the number of times the forward association x -> ...
-		// comes up. 
-		value, err := associationDAO.CountBackwardAssociation(word)
-		if err != nil {
-			log.Logger.Error(err)
-			return nil, err
-		}
+		words[i] = word
+		i++
+	}
+
+	// Given a word x, the value of x is the number of times the forward association x -> ...
+	// comes up. 
+	associationsValue, err := associationDAO.CountBackwardAssociations(words)
+	if err != nil {
+		return nil, err
+	}
+
+	i = 0
+	for _, av := range associationsValue {
+		word, value := av.Word, av.Count
 		symbolSize := value
 		if word == queriedWord {
 			symbolSize = queriedNodeSymbolSize

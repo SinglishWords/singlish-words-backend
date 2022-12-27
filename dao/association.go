@@ -141,28 +141,50 @@ type Count struct {
 	N int64	`db:"count"`
 }
 
-func (o AssociationDAO) CountForwardAssociation(q string) (int64, error) {
+// Result will be sorted by count descending
+func (o AssociationDAO) CountForwardAssociations(words []string) ([]model.AssociationValue, error) {
+	if len(words) == 0 {
+		log.Logger.Info("Slice length is 0, not executing CountForwardAssociations")
+		return make([]model.AssociationValue, 0), nil
+	}
+
 	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
-		return -1, notConnectedError{}
+		return nil, notConnectedError{}
 	}
 
-	var count Count
-	err := db.Get(&count, sqlCountForwardAssociation, q)
-	log.Logger.Infof("Executed CountForwardAssociation for '%s': %d", q, count.N)
-	return count.N, err
+	var associationValues []model.AssociationValue
+	err := db.Select(&associationValues, 
+		fmt.Sprintf(
+			"SELECT target AS word, COALESCE(SUM(count), 0) AS count FROM association WHERE target in (%s) GROUP BY target ORDER BY count DESC;",
+			joinWithQuotes(words),
+		),
+	)
+	log.Logger.Infof("Executing CountForwardAssociations: %+v", associationValues)
+	return associationValues, err
 }
 
-func (o AssociationDAO) CountBackwardAssociation(q string) (int64, error) {
+// Result will be sorted by count descending
+func (o AssociationDAO) CountBackwardAssociations(words []string) ([]model.AssociationValue, error) {
+	if len(words) == 0 {
+		log.Logger.Info("Slice length is 0, not executing CountBackwardAssociations")
+		return make([]model.AssociationValue, 0), nil
+	}
+
 	db, _ := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
-		return -1, notConnectedError{}
+		return nil, notConnectedError{}
 	}
 
-	var count Count
-	err := db.Get(&count, sqlCountBackwardAssociation, q)
-	log.Logger.Infof("Executed CountBackwardAssociation for '%s': %d", q, count.N)
-	return count.N, err
+	var associationValues []model.AssociationValue
+	err := db.Select(&associationValues, 
+		fmt.Sprintf(
+			"SELECT source AS word, COALESCE(SUM(count), 0) AS count FROM association WHERE source in (%s) GROUP BY source ORDER BY count DESC;",
+			joinWithQuotes(words),
+		),
+	)
+	log.Logger.Infof("Executing CountBackwardAssociations: %+v", associationValues)
+	return associationValues, err
 }
