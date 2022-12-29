@@ -157,7 +157,8 @@ func (o AssociationDAO) CountForwardAssociations(words []string) ([]model.Associ
 	var associationValues []model.AssociationValue
 	err := db.Select(&associationValues, 
 		fmt.Sprintf(
-			"SELECT target AS word, COALESCE(SUM(count), 0) AS count FROM association WHERE target in (%s) GROUP BY target ORDER BY count DESC;",
+			// No need coalesce since if target does not exist, it won't be included in the result
+			"SELECT target AS word, SUM(count) AS count FROM association WHERE target in (%s) GROUP BY target ORDER BY count DESC;",
 			joinWithQuotes(words),
 		),
 	)
@@ -181,7 +182,8 @@ func (o AssociationDAO) CountBackwardAssociations(words []string) ([]model.Assoc
 	var associationValues []model.AssociationValue
 	err := db.Select(&associationValues, 
 		fmt.Sprintf(
-			"SELECT source AS word, COALESCE(SUM(count), 0) AS count FROM association WHERE source in (%s) GROUP BY source ORDER BY count DESC;",
+			// No need coalesce since if source does not exist, it won't be included in the result
+			"SELECT source AS word, SUM(count) AS count FROM association WHERE source in (%s) GROUP BY source ORDER BY count DESC;",
 			joinWithQuotes(words),
 		),
 	)
