@@ -11,22 +11,6 @@ const queriedNodeSymbolSize = 10000000000
 
 var associationDAO = dao.AssociationDAO{}
 
-func makeForwardAssociationsValueMap(words []string) (map[string]int64, error) {
-	// Given a word x, the value of x is the number of times the forward association ... -> x
-	// is thought of when the word x is given
-	associationsValue, err := associationDAO.CountForwardAssociations(words)
-	if err != nil {
-		return nil, err
-	}
-
-	vm := make(map[string]int64)
-	for _, av := range associationsValue {
-		word, value := av.Word, av.Count
-		vm[word] = value
-	}
-	return vm, nil
-}
-
 func marshalForwardAssociations(set map[string]int, associations []model.Association, queriedWord string) (*Visualisation, error) {
 	nodes := make([]model.Node, 0, len(associations))
 	links := make([]model.Link, 0, len(associations))
@@ -39,18 +23,28 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 		i++
 	}
 
-	associationsValueMap, err := makeForwardAssociationsValueMap(words)
+	// Given a word x, the value of x is the number of times the forward association ... -> x
+	// is thought of when the word x is given
+	associationsValue, err := associationDAO.CountForwardAssociations(words)
 	if err != nil {
 		return nil, err
 	}
 
-	i = 0
-	for word := range set {
-		value, ok := associationsValueMap[word]
-		if !ok {
-			value = 0
+	// Temporary dirty fix to include the queried word if it is not included in associationDAO.CountForwardAssociations(words)
+	found := false
+	for _, av := range associationsValue {
+		if av.Word == queriedWord {
+			found = true
+			break
 		}
+	}
+	if !found {
+		associationsValue = append(associationsValue, model.AssociationValue{ Word: queriedWord, Count: 0 })
+	}
 
+	i = 0
+	for _, av := range associationsValue {
+		word, value := av.Word, av.Count
 		symbolSize := value
 		if word == queriedWord {
 			symbolSize = queriedNodeSymbolSize
@@ -68,22 +62,6 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 	return &Visualisation{Nodes: nodes, Links: links, Categories: []model.Category{}}, nil
 }
 
-func makeBackwardAssociationsValueMap(words []string) (map[string]int64, error) {
-	// Given a word x, the value of x is the number of times the forward association x -> ...
-	// comes up. 
-	associationsValue, err := associationDAO.CountBackwardAssociations(words)
-	if err != nil {
-		return nil, err
-	}
-
-	vm := make(map[string]int64)
-	for _, av := range associationsValue {
-		word, value := av.Word, av.Count
-		vm[word] = value
-	}
-	return vm, nil
-}
-
 func marshalBackwardAssociations(set map[string]int, associations []model.Association, queriedWord string) (*Visualisation, error) {
 	nodes := make([]model.Node, 0, len(associations))
 	links := make([]model.Link, 0, len(associations))
@@ -96,18 +74,28 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		i++
 	}
 
-	associationsValueMap, err := makeBackwardAssociationsValueMap(words)
+	// Given a word x, the value of x is the number of times the forward association x -> ...
+	// comes up. 
+	associationsValue, err := associationDAO.CountBackwardAssociations(words)
 	if err != nil {
 		return nil, err
 	}
 
-	i = 0
-	for word := range set {
-		value, ok := associationsValueMap[word]
-		if !ok {
-			value = 0
+	// Temporary dirty fix to include the queried word if it is not included in associationDAO.CountForwardAssociations(words)
+	found := false
+	for _, av := range associationsValue {
+		if av.Word == queriedWord {
+			found = true
+			break
 		}
+	}
+	if !found {
+		associationsValue = append(associationsValue, model.AssociationValue{ Word: queriedWord, Count: 0 })
+	}
 
+	i = 0
+	for _, av := range associationsValue {
+		word, value := av.Word, av.Count
 		symbolSize := value
 		if word == queriedWord {
 			symbolSize = queriedNodeSymbolSize
