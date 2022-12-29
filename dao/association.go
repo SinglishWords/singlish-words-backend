@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	sqlGetAssociationsBySource = `SELECT * FROM association WHERE source=?;`
-	sqlGetBackwardAssociationsBySource = `SELECT * FROM association WHERE target=?;`
+	sqlGetAssociationsBySource = `SELECT * FROM association WHERE source=? ORDER BY count DESC;`
+	sqlGetBackwardAssociationsBySource = `SELECT * FROM association WHERE target=? ORDER BY count DESC;`
 	sqlGetAssociation = `SELECT * FROM association WHERE source=? AND target=?;`
 	sqlCountForwardAssociation = `SELECT COALESCE(SUM(count), 0) AS count FROM association WHERE target=?;`
 	sqlCountBackwardAssociation = `SELECT COALESCE(SUM(count), 0) AS count FROM association WHERE source=?;`
@@ -88,7 +88,7 @@ func (o AssociationDAO) MultiSelectBySource(sources []string) ([]model.Associati
 	}
 
 	var associations []model.Association
-	err := db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE source IN (%s);", joinWithQuotes(sources)))
+	err := db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE source IN (%s) ORDER BY source, count DESC;", joinWithQuotes(sources)))
 	log.Logger.Infof("Executing MultiSelectBySource: %+v", associations)
 	return associations, err
 }
@@ -106,7 +106,7 @@ func (o AssociationDAO) MultiSelectByTarget(sources []string) ([]model.Associati
 	}
 
 	var associations []model.Association
-	err := db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE target IN (%s);", joinWithQuotes(sources)))
+	err := db.Select(&associations, fmt.Sprintf("SELECT * FROM association WHERE target IN (%s) ORDER BY target, count DESC;", joinWithQuotes(sources)))
 	log.Logger.Infof("Executing MultiSelectByTarget: %+v", associations)
 	return associations, err
 }

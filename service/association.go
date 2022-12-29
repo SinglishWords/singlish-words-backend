@@ -83,6 +83,7 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 	}
 
 	for _, association := range associations {
+		// Backward link {target -> source}
 		links = append(links, model.Link{Source: ids[association.Target], Target: ids[association.Source]})
 	}
 
