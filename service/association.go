@@ -189,20 +189,9 @@ func GetSetAndForwardAssociations(word string) (map[string]int, []model.Associat
 	return set, allAssociations, nil
 }
 
-func GetBackwardAssociations(word string) (*Visualisation, error) {
-	// Get set of words: queried word, and all 1-away backward neighbors of the queried word
-	associations, err := associationDAO.GetBackwardAssociationsBySource(word)
-	if err != nil {
-		log.Logger.Error(err)
-		return nil, err
-	}
-
-	set, backwardNeighbors := createSetAndBackwardNeighbors(associations)
-	log.Logger.Infof("Set of words: %+v", set)
-	log.Logger.Infof("First-degree backward neighbors of '%s': %+v", word, backwardNeighbors)
-
-	// Get all associations where target in [...backwardNeighbors]
-	neighborsAssociations, err := associationDAO.MultiSelectByTarget(backwardNeighbors)
+// Get all associations where target in [...backwardNeighbors]
+func getNeighborsBackwardAssociations(set map[string]int, neighbors []string) ([]model.Association, error) {
+	neighborsAssociations, err := associationDAO.MultiSelectByTarget(neighbors)
 	if err != nil {
 		log.Logger.Error(err)
 		return nil, err
@@ -216,8 +205,38 @@ func GetBackwardAssociations(word string) (*Visualisation, error) {
 		}
 	}
 
-	allAssociations := append(associations, validNeighborsAssociations...)
+	return validNeighborsAssociations, nil
+}
+
+func GetBackwardAssociationsVisualisation(word string) (*Visualisation, error) {
+	set, allAssociations, err := GetSetAndBackwardAssociations(word)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, err
+	}
 	return marshalBackwardAssociations(set, allAssociations, word)
+}
+
+func GetSetAndBackwardAssociations(word string) (map[string]int, []model.Association, error) {
+	// Get set of words: queried word, and all 1-away backward neighbors of the queried word
+	associations, err := associationDAO.GetBackwardAssociationsBySource(word)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, nil, err
+	}
+
+	set, backwardNeighbors := createSetAndBackwardNeighbors(associations)
+	log.Logger.Infof("Set of words: %+v", set)
+	log.Logger.Infof("First-degree backward neighbors of '%s': %+v", word, backwardNeighbors)
+
+	neighborsAssociations, err := getNeighborsBackwardAssociations(set, backwardNeighbors)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, nil, err
+	}
+	allAssociations := append(associations, neighborsAssociations...)
+
+	return set, allAssociations, nil
 }
 
 func IncrementAssociationCount(q string, associatedWord string, inc int64) error {

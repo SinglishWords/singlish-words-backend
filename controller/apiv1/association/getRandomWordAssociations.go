@@ -24,7 +24,7 @@ func GetRandomWordAssociations(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	word := randomQuestion.Word
 
 	log.Logger.Infof(fmt.Sprintf("Getting backward associations for word: %s", word))
-	backwardAssociations, err := service.GetBackwardAssociations(word)
+	backwardAssociations, err := service.GetBackwardAssociationsVisualisation(word)
 	if err != nil {
 		return apiv1.StatusFail(err.Error()), err
 	}
