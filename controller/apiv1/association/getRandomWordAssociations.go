@@ -30,7 +30,7 @@ func GetRandomWordAssociations(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	}
 
 	log.Logger.Infof(fmt.Sprintf("Getting forward associations for word: %s", word))
-	forwardAssociations, err := service.GetForwardAssociations(word)
+	forwardAssociations, err := service.GetForwardAssociationsVisualisation(word)
 	if err != nil {
 		return apiv1.StatusFail(err.Error()), err
 	}

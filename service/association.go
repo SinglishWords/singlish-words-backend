@@ -137,19 +137,8 @@ type Visualisation struct {
 	Categories 	[]model.Category `json:"categories"`
 }
 
-func GetForwardAssociations(word string) (*Visualisation, error) {
-	// Get set of words: queried word, and all 1-away neighbors of the queried word
-	associations, err := associationDAO.GetAssociationsBySource(word)
-	if err != nil {
-		log.Logger.Error(err)
-		return nil, err
-	}
-
-	set, neighbors := createSetAndNeighbors(associations)
-	log.Logger.Infof("Set of words: %+v", set)
-	log.Logger.Infof("First-degree neighbors of '%s': %+v", word, neighbors)
-
-	// Get all associations where source in [...neighbors]
+// Get all associations where source in [...neighbors]
+func getNeighborsForwardAssociations(set map[string]int, neighbors []string) ([]model.Association, error) {
 	neighborsAssociations, err := associationDAO.MultiSelectBySource(neighbors)
 	if err != nil {
 		log.Logger.Error(err)
@@ -158,15 +147,45 @@ func GetForwardAssociations(word string) (*Visualisation, error) {
 
 	validNeighborsAssociations := make([]model.Association, 0, len(neighborsAssociations))
 	for _, association := range neighborsAssociations {
-		// Valid association iff target is in the set of nodes
+		// Is valid association iff target is in the set of nodes
 		_, ok := set[association.Target]
 		if ok {
 			validNeighborsAssociations = append(validNeighborsAssociations, association)
 		}
 	}
 
-	allAssociations := append(associations, validNeighborsAssociations...)
+	return validNeighborsAssociations, nil
+}
+
+func GetForwardAssociationsVisualisation(word string) (*Visualisation, error) {
+	set, allAssociations, err := GetSetAndForwardAssociations(word)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, err
+	}
 	return marshalForwardAssociations(set, allAssociations, word)
+}
+
+func GetSetAndForwardAssociations(word string) (map[string]int, []model.Association, error) {
+	// Get set of words: queried word, and all 1-away neighbors of the queried word
+	associations, err := associationDAO.GetAssociationsBySource(word)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, nil, err
+	}
+
+	set, neighbors := createSetAndNeighbors(associations)
+	log.Logger.Infof("Set of words: %+v", set)
+	log.Logger.Infof("First-degree neighbors of '%s': %+v", word, neighbors)
+
+	neighborsAssociations, err := getNeighborsForwardAssociations(set, neighbors)
+	if err != nil {
+		log.Logger.Error(err)
+		return nil, nil, err
+	}
+	allAssociations := append(associations, neighborsAssociations...)
+
+	return set, allAssociations, nil
 }
 
 func GetBackwardAssociations(word string) (*Visualisation, error) {

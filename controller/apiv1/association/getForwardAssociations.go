@@ -16,7 +16,7 @@ func GetForwardAssociations(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 	word = strings.Replace(word, "-", " ", -1)
 	log.Logger.Infof(fmt.Sprintf("Getting forward associations for word: %s", word))
 
-	associations, err := service.GetForwardAssociations(word)
+	associations, err := service.GetForwardAssociationsVisualisation(word)
 	if err != nil {
 		return apiv1.StatusFail(err.Error()), err
 	}
