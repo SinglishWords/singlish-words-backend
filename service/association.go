@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"math"
 	"singlishwords/dao"
 	"singlishwords/log"
@@ -83,9 +82,7 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 		i++
 	}
 
-	fmt.Println("before",nodes)
 	normalizeNodeSize(nodes, min, max)
-	fmt.Println("after",nodes)
 
 	for _, association := range associations {
 		links = append(links, model.Link{Source: ids[association.Source], Target: ids[association.Target]})
@@ -137,6 +134,8 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		ids[word] = i
 		i++
 	}
+
+	normalizeNodeSize(nodes, 0, 0)
 
 	for _, association := range associations {
 		// Backward link {target -> source}
