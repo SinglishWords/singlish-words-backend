@@ -1,15 +1,34 @@
 package service
 
 import (
+	"fmt"
+	"math"
 	"singlishwords/dao"
 	"singlishwords/log"
 	"singlishwords/model"
 )
 
 // Queried node have the largest symbolSize for visualization purposes
-const queriedNodeSymbolSize = 10000000000
+const queriedNodeSymbolSize = 10000
 
 var associationDAO = dao.AssociationDAO{}
+
+func normalizeNodeSize(nodes []model.Node, min, max int64) {
+	var node *model.Node
+	for i := range nodes {
+		node = &nodes[i]
+		// if node.SymbolSize == queriedNodeSymbolSize {
+		// 	node.SymbolSize = 100
+		// } else if max != min {
+		// 	node.SymbolSize = int64(math.Round(float64(node.SymbolSize - min) / float64(max - min) * 100))
+		// }
+
+		// if node.SymbolSize < 20 {
+		// 	node.SymbolSize = 20
+		// }
+		node.SymbolSize = int64(math.Log2(float64(node.SymbolSize))) * 2
+	}
+}
 
 func marshalForwardAssociations(set map[string]int, associations []model.Association, queriedWord string) (*Visualisation, error) {
 	nodes := make([]model.Node, 0, len(associations))
@@ -43,17 +62,30 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 	}
 
 	i = 0
+	var min int64 = math.MaxInt64
+	var max int64 = -1
 	for _, av := range associationsValue {
 		word, value := av.Word, av.Count
 		symbolSize := value
 		if word == queriedWord {
 			symbolSize = queriedNodeSymbolSize
+		} else {
+			if symbolSize < min {
+				min = symbolSize
+			}
+			if symbolSize > max {
+				max = symbolSize
+			}
 		}
 
 		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: symbolSize, Value: value, Category: 0})
 		ids[word] = i
 		i++
 	}
+
+	fmt.Println("before",nodes)
+	normalizeNodeSize(nodes, min, max)
+	fmt.Println("after",nodes)
 
 	for _, association := range associations {
 		links = append(links, model.Link{Source: ids[association.Source], Target: ids[association.Target]})
