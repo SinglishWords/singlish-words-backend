@@ -12,20 +12,11 @@ const queriedNodeSymbolSize = 10000
 
 var associationDAO = dao.AssociationDAO{}
 
-func normalizeNodeSize(nodes []model.Node, min, max int64) {
+func normalizeNodeSize(nodes []model.Node) {
 	var node *model.Node
 	for i := range nodes {
 		node = &nodes[i]
-		// if node.SymbolSize == queriedNodeSymbolSize {
-		// 	node.SymbolSize = 100
-		// } else if max != min {
-		// 	node.SymbolSize = int64(math.Round(float64(node.SymbolSize - min) / float64(max - min) * 100))
-		// }
-
-		// if node.SymbolSize < 20 {
-		// 	node.SymbolSize = 20
-		// }
-		node.SymbolSize = int64(math.Log2(float64(node.SymbolSize))) * 2
+		node.SymbolSize = int64(math.Log2(float64(node.SymbolSize)) * 5)
 	}
 }
 
@@ -82,7 +73,7 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 		i++
 	}
 
-	normalizeNodeSize(nodes, min, max)
+	normalizeNodeSize(nodes)
 
 	for _, association := range associations {
 		links = append(links, model.Link{Source: ids[association.Source], Target: ids[association.Target]})
@@ -135,7 +126,7 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		i++
 	}
 
-	normalizeNodeSize(nodes, 0, 0)
+	normalizeNodeSize(nodes)
 
 	for _, association := range associations {
 		// Backward link {target -> source}
