@@ -4,19 +4,26 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"singlishwords/dao"
 )
+
+var answerDAO = dao.AnswerDAO{}
+var associationDAO = dao.AssociationDAO{}
+var questionDAO = dao.QuestionDAO{}
+var communityDAO = dao.CommunityDAO{}
 
 // Reference: https://www.rapid7.com/blog/post/2016/08/04/build-a-simple-cli-tool-with-golang
 func main() {
 	// Subcommands
     createAssociationsCommand := flag.NewFlagSet("create-associations", flag.ExitOnError)
     cleanAnswersCommand := flag.NewFlagSet("clean-answers", flag.ExitOnError)
+    detectCategoriesCommand := flag.NewFlagSet("detect-categories", flag.ExitOnError)
 
     // Verify that a subcommand has been provided
     // os.Arg[0] is the main command
     // os.Arg[1] will be the subcommand
     if len(os.Args) < 2 {
-        fmt.Println("specify subcommand: create-associations | clean-answers")
+        fmt.Println("specify subcommand: create-associations | clean-answers | detect-categories")
         os.Exit(1)
     }
 
@@ -29,6 +36,8 @@ func main() {
         createAssociationsCommand.Parse(os.Args[2:])
     case "clean-answers":
         cleanAnswersCommand.Parse(os.Args[2:])
+    case "detect-categories":
+        detectCategoriesCommand.Parse(os.Args[2:])
     default:
         flag.PrintDefaults()
         os.Exit(1)
@@ -42,6 +51,9 @@ func main() {
 	}  
     if cleanAnswersCommand.Parsed() {
         err = cleanAnswers()
+    }
+    if detectCategoriesCommand.Parsed() {
+        err = detectCategories()
     }
 
 	if err != nil {

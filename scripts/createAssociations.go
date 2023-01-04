@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"singlishwords/dao"
 	"singlishwords/database"
 	"singlishwords/log"
 )
@@ -53,10 +52,6 @@ func countAssociationsFrequencies(associations []forwardAssociationTriplet) map[
 
 	return count
 }
-
-var answerDAO = dao.AnswerDAO{}
-var associationDAO = dao.AssociationDAO{}
-var questionDAO = dao.QuestionDAO{}
 
 func createAssociations() error {
 	answers, err := answerDAO.GetAll()

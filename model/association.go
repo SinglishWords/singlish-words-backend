@@ -21,7 +21,7 @@ type Link struct {
 }
 
 type Category struct {
-	Name string `json:"name"`
+	Name int64 `json:"name"`
 }
 
 type AssociationValue struct {

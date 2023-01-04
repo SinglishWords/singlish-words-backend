@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	sqlGetAllAssociations = `SELECT * FROM association;`
 	sqlGetAssociationsBySource = `SELECT * FROM association WHERE source=? ORDER BY count DESC;`
 	sqlGetBackwardAssociationsBySource = `SELECT * FROM association WHERE target=? ORDER BY count DESC;`
 	sqlGetAssociation = `SELECT * FROM association WHERE source=? AND target=?;`
@@ -21,6 +22,7 @@ const (
 	sqlUpdateAssociation  = `UPDATE association SET
 						count=?
 						WHERE source=? AND target=?;`
+	sqlSelectUniqueSourceAndTargets = `SELECT source as word FROM association UNION SELECT target FROM association;`
 )
 
 type AssociationDAO struct{}
@@ -189,4 +191,30 @@ func (o AssociationDAO) CountBackwardAssociations(words []string) ([]model.Assoc
 	)
 	log.Logger.Infof("Executing CountBackwardAssociations: %+v", associationValues)
 	return associationValues, err
+}
+
+func (o AssociationDAO) GetUniqueWords() ([]string, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return nil, notConnectedError{}
+	}
+
+	var words []string
+	err := db.Select(&words, sqlSelectUniqueSourceAndTargets)
+	log.Logger.Infof("Executing GetUniqueWords: %d words", len(words))
+	return words, err
+}
+
+func (o AssociationDAO) GetAll() ([]model.Association, error) {
+	db, _ := database.GetMySqlDB()
+	if db == nil {
+		log.Logger.Error("Cannot connect to mysql database.")
+		return nil, notConnectedError{}
+	}
+
+	var associations []model.Association
+	err := db.Select(&associations, sqlGetAllAssociations)
+	log.Logger.Infof("Executing GetAll: %d associations", len(associations))
+	return associations, err
 }
