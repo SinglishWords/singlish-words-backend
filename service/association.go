@@ -51,7 +51,7 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 		associationsValue = append(associationsValue, model.AssociationValue{ Word: queriedWord, Count: 0 })
 	}
 
-	cm, communitiesSet, err := CreateCommunityMapAndSet(words)
+	communities, cm, err := CreateCommunityListAndMap(words)
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +82,6 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 
 	for _, association := range associations {
 		links = append(links, model.Link{Source: ids[association.Source], Target: ids[association.Target]})
-	}
-
-	communities := make([]model.Category, 0, 10)
-	for c := range communitiesSet {
-		communities = append(communities, model.Category{Name: c})
 	}
 
 	return &Visualisation{Nodes: nodes, Links: links, Categories: communities}, nil
@@ -123,7 +118,7 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 		associationsValue = append(associationsValue, model.AssociationValue{ Word: queriedWord, Count: 0 })
 	}
 
-	cm, communitiesSet, err := CreateCommunityMapAndSet(words)
+	communities, cm, err := CreateCommunityListAndMap(words)
 	if err != nil {
 		return nil, err
 	}
@@ -146,11 +141,6 @@ func marshalBackwardAssociations(set map[string]int, associations []model.Associ
 	for _, association := range associations {
 		// Backward link {target -> source}
 		links = append(links, model.Link{Source: ids[association.Target], Target: ids[association.Source]})
-	}
-
-	communities := make([]model.Category, 0, 10)
-	for c := range communitiesSet {
-		communities = append(communities, model.Category{Name: c})
 	}
 
 	return &Visualisation{Nodes: nodes, Links: links, Categories: communities}, nil

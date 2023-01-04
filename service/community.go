@@ -2,13 +2,25 @@ package service
 
 import (
 	"singlishwords/dao"
+	"singlishwords/model"
 )
 
 var communityDAO = dao.CommunityDAO{}
 
-func CreateCommunityMapAndSet(words []string) (map[string]int64, map[int64]int, error) {
-	m := make(map[string]int64)
-	c := make(map[int64]int)
+func find(s []model.Category, c int64) int {
+	for i, e := range s {
+		if e.Name == c {
+			return i
+		}
+	}
+	return -1
+}
+
+// Returns a list of unique communities that the input words are part of
+// and a map of {word -> index of its community in the communities list}
+func CreateCommunityListAndMap(words []string) ([]model.Category, map[string]int, error) {
+	c := make([]model.Category, 0, 10) // 10 is arbitrary.
+	m := make(map[string]int)
 
 	communityMappings, err := communityDAO.MultiSelectByWord(words)
 	if err != nil {
@@ -16,13 +28,14 @@ func CreateCommunityMapAndSet(words []string) (map[string]int64, map[int64]int, 
 	}
 
 	for _, cm := range communityMappings {
-		m[cm.Word] = cm.Community
-
-		_, ok := c[cm.Community]
-		if !ok {
-			c[cm.Community] = 1
+		idx := find(c, cm.Community)
+		if idx == -1 {
+			c = append(c, model.Category{Name: cm.Community})
+			idx = len(c) - 1
 		}
+		
+		m[cm.Word] = idx
 	}
 
-	return m, c, nil
+	return c, m, nil
 }

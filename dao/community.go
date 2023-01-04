@@ -86,6 +86,7 @@ func (o CommunityDAO) Upsert(cm *model.CommunityMapping) error {
 		}
 		cm.Id = id
 		log.Logger.Infof("Added a new community mapping to database: %+v", cm)	
+		return nil
 	}
 	
 	// If found, update

@@ -12,7 +12,7 @@ type Node struct {
 	Name 			string	`json:"name"`
 	SymbolSize 		int64 	`json:"symbolSize"`
 	Value 			int64 	`json:"value"`
-	Category 		int64 	`json:"category"`
+	Category 		int 	`json:"category"`
 }
 
 type Link struct {
