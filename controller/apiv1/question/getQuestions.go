@@ -30,7 +30,7 @@ func GetQuestions(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 		return code, nil
 	}
 
-	questions, err := service.GetRandomNQuestions(limit)
+	questions, err := service.GetRandomWeightedQuestions(limit)
 	if err != nil {
 		// code = status.Fail("Failed when retrieve data from database.")
 		code = apiv1.StatusFail(err.Error())

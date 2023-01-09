@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Answer struct {
 	Id           int64         `json:"id" db:"id"`

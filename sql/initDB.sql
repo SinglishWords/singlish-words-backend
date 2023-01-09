@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS `answer`;
 DROP TABLE IF EXISTS `respondent`;
 DROP TABLE IF EXISTS `question`;
 DROP TABLE IF EXISTS `email`;
+DROP TABLE IF EXISTS `association`;
+DROP TABLE IF EXISTS `community_map`;
 
 -- ---------------------------------------
 --              CREATE TABLES
@@ -64,4 +66,26 @@ CREATE TABLE IF NOT EXISTS `answer` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`question_id`)  REFERENCES question(`id`),
     FOREIGN KEY (`respondent_id`) REFERENCES respondent(`id`)
+) CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `association` (
+--   name                   type            constraints
+    `id`                    INT             NOT NULL    AUTO_INCREMENT,
+    `source`                VARCHAR(256)    NOT NULL,
+    `target`                VARCHAR(256)    NOT NULL,
+    `count`                 INT             NOT NULL,
+
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX forward_association (`source`, `target`),
+    UNIQUE INDEX backward_association (`target`, `source`)
+) CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `community_map` (
+--   name                   type            constraints
+    `id`                    INT             NOT NULL    AUTO_INCREMENT,
+    `word`                  VARCHAR(256)    NOT NULL,
+    `community`             INT             NOT NULL,
+
+    PRIMARY KEY (`id`),
+    UNIQUE (`word`)
 ) CHARSET=utf8;

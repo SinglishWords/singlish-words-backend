@@ -8,7 +8,7 @@ import (
 
 var questionCache cache.QuestionCache
 
-func GetRandomNQuestions(limit int) ([]model.Question, error) {
+func GetRandomWeightedQuestions(limit int) ([]model.Question, error) {
 	questions, err := questionCache.GetNRandomQuestions(limit)
 	return questions, err
 }
@@ -28,4 +28,18 @@ func GetAllQuestions() ([]model.Question, error) {
 		return nil, err
 	}
 	return questions, nil
+}
+
+func GetQuestionById(id int64) (*model.Question, error) {
+	questionDAO := dao.QuestionDAO{}
+	return questionDAO.GetById(id)
+}
+
+func GetRandomQuestion() (*model.Question, error) {
+	questionDAO := dao.QuestionDAO{}
+	question, err := questionDAO.GetRandom()
+	if err != nil {
+		return nil, err
+	}
+	return question, nil
 }
