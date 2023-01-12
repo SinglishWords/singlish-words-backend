@@ -54,6 +54,7 @@ func countAssociationsFrequencies(associations []forwardAssociationTriplet) map[
 }
 
 func createAssociations() error {
+	seen := make(map[string]int)
 	answers, err := answerDAO.GetAll()
 	if err != nil {
 		return err
@@ -65,6 +66,13 @@ func createAssociations() error {
 		if err != nil {
 			return err
 		}
+
+		_, ok := seen[q.Word]
+		if ok {
+			continue
+		} 
+		seen[q.Word] = 1
+
 		associations, err := getForwardAssociations(q.Word)
 		if err != nil {
 			return err
@@ -83,7 +91,7 @@ func createAssociations() error {
 				return err
 			}
 		}
-		fmt.Println("---END WORD---")
+		// fmt.Println("---END WORD---")
 	}
 
 	return nil
