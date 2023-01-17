@@ -16,7 +16,7 @@ func normalizeNodeSize(nodes []model.Node) {
 	var node *model.Node
 	for i := range nodes {
 		node = &nodes[i]
-		node.SymbolSize = int64(math.Log2(float64(node.SymbolSize)) * 5)
+		node.SymbolSize = int64(math.Log2(float64(node.SymbolSize)) * 5 + (10 / (math.Log2(float64(node.SymbolSize) + 1))))
 	}
 }
 
@@ -57,20 +57,11 @@ func marshalForwardAssociations(set map[string]int, associations []model.Associa
 	}
 
 	i = 0
-	var min int64 = math.MaxInt64
-	var max int64 = -1
 	for _, av := range associationsValue {
 		word, value := av.Word, av.Count
 		symbolSize := value
 		if word == queriedWord {
 			symbolSize = queriedNodeSymbolSize
-		} else {
-			if symbolSize < min {
-				min = symbolSize
-			}
-			if symbolSize > max {
-				max = symbolSize
-			}
 		}
 
 		nodes = append(nodes, model.Node{Id: i, Name: word, SymbolSize: symbolSize, Value: value, Category: cm[word]})
