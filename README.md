@@ -135,6 +135,12 @@ The backend serves the following API endpoints:
 | /respondent | POST | respondent's attributes | updates the database with the respondent details only |
 | /answers | POST | respondent's and answer's attributes | updates the database with the answers + the respondent details |
 | /email | POST | email's attributes | updates the database with the email |
+| /associations/forward/:word | GET |  | returns all forward associations of a particular `word` and its first-degree neighbors |
+| /associations/forward/:word/download | GET |  | downloads CSV of all forward associations of a particular `word` and its first-degree neighbors |
+| /associations/backward/:word | GET |  | returns all backward associations of a particular `word` and its first-degree neighbors |
+| /associations/backward/:word/download | GET |  | downloads CSV of all backward associations of a particular `word` and its first-degree neighbors |
+| /associations/random | GET |  | returns all forward and backward associations of a random `word` and its first-degree neighbors |
+
 
 ```mermaid
 flowchart LR
