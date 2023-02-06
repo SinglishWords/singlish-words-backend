@@ -8,9 +8,9 @@ import (
 
 const (
 	sqlInsertRespondent = `INSERT INTO respondent 
-			(age, gender, education, country_of_birth, country_of_residence, 
+			(age, gender, education, duration_of_sgp_residence, country_of_birth, country_of_residence, 
 			 ethnicity, is_native, language_spoken, start_time, end_time, uuid) 
-			 VALUES (:age, :gender, :education, :country_of_birth, :country_of_residence, 
+			 VALUES (:age, :gender, :education, :duration_of_sgp_residence, :country_of_birth, :country_of_residence, 
 			 :ethnicity, :is_native, :language_spoken, :start_time, :end_time, :uuid);`
 	sqlGetAllRespondents = `SELECT * FROM respondent;`
 	sqlGetRespondentById = `SELECT * FROM respondent WHERE id=?;`
