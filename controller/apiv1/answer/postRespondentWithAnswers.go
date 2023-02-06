@@ -65,7 +65,7 @@ type paramPostRespondentWithAnswers struct {
 	Age                    string    `json:"age"`
 	Gender                 string    `json:"gender"`
 	Education              string    `json:"education"`
-	DurationOfSgpResidence string    `json:"durationOfSgpResidenceList"`
+	DurationOfSgpResidence string    `json:"durationOfSgpResidence"`
 	CountryOfBirth         string    `json:"countryOfBirth"`
 	CountryOfResidence     string    `json:"countryOfResidence"`
 	Ethnicity              string    `json:"ethnicity"`

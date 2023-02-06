@@ -42,7 +42,7 @@ type postRespondentBody struct {
 	Age                    string    `json:"age" db:"age"`
 	Gender                 string    `json:"gender" db:"gender"`
 	Education              string    `json:"education" db:"education"`
-	DurationOfSgpResidence string    `json:"durationOfSgpResidenceList" db:"duration_of_sgp_residence"`
+	DurationOfSgpResidence string    `json:"durationOfSgpResidence" db:"duration_of_sgp_residence"`
 	CountryOfBirth         string    `json:"countryOfBirth" db:"country_of_birth"`
 	CountryOfResidence     string    `json:"countryOfResidence" db:"country_of_residence"`
 	Ethnicity              string    `json:"ethnicity" db:"ethnicity"`
