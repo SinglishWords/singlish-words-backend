@@ -11,6 +11,7 @@ var answerDAO = dao.AnswerDAO{}
 var associationDAO = dao.AssociationDAO{}
 var questionDAO = dao.QuestionDAO{}
 var communityDAO = dao.CommunityDAO{}
+var respondentDAO = dao.RespondentDAO{}
 
 // Reference: https://www.rapid7.com/blog/post/2016/08/04/build-a-simple-cli-tool-with-golang
 func main() {
@@ -18,6 +19,7 @@ func main() {
     createAssociationsCommand := flag.NewFlagSet("create-associations", flag.ExitOnError)
     cleanAnswersCommand := flag.NewFlagSet("clean-answers", flag.ExitOnError)
     detectCategoriesCommand := flag.NewFlagSet("detect-categories", flag.ExitOnError)
+    migrateAgeCommand := flag.NewFlagSet("migrate-age", flag.ExitOnError)
 
     // Verify that a subcommand has been provided
     // os.Arg[0] is the main command
@@ -38,6 +40,8 @@ func main() {
         cleanAnswersCommand.Parse(os.Args[2:])
     case "detect-categories":
         detectCategoriesCommand.Parse(os.Args[2:])
+    case "migrate-age":
+        migrateAgeCommand.Parse(os.Args[2:])
     default:
         flag.PrintDefaults()
         os.Exit(1)
@@ -54,6 +58,9 @@ func main() {
     }
     if detectCategoriesCommand.Parsed() {
         err = detectCategories()
+    }
+    if migrateAgeCommand.Parsed() {
+        err = migrateAge()
     }
 
 	if err != nil {
