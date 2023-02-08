@@ -8,13 +8,12 @@ import (
 
 const (
 	sqlInsertRespondent = `INSERT INTO respondent 
-			(age, gender, education, duration_of_sgp_residence, country_of_birth, country_of_residence, 
+			(age, gender, education, country_of_birth, country_of_residence, 
 			 ethnicity, is_native, language_spoken, start_time, end_time, uuid) 
-			 VALUES (:age, :gender, :education, :duration_of_sgp_residence, :country_of_birth, :country_of_residence, 
+			 VALUES (:age, :gender, :education, :country_of_birth, :country_of_residence, 
 			 :ethnicity, :is_native, :language_spoken, :start_time, :end_time, :uuid);`
 	sqlGetAllRespondents = `SELECT * FROM respondent;`
 	sqlGetRespondentById = `SELECT * FROM respondent WHERE id=?;`
-	sqlUpdateRespondentAge     = "UPDATE respondent SET age=? WHERE id=?;"
 )
 
 type RespondentDAO struct{}
@@ -93,22 +92,4 @@ func (RespondentDAO) AddRespondentWithAnswers(r *model.Respondent, as []model.An
 	r.Id = rid
 	log.Logger.Infof("Saved respondent with %d answers together. The respondent: %v, the answers: %v", len(as), r, as)
 	return r, nil
-}
-
-func (RespondentDAO) Update(respondent *model.Respondent) error {
-	db, err := database.GetMySqlDB()
-	if db == nil {
-		log.Logger.Error("Cannot connect to mysql database.")
-		return notConnectedError{}
-	}
-	result, err := db.Exec(sqlUpdateRespondentAge, respondent.Age, respondent.Id)
-	if err != nil {
-		log.Logger.Warnw("Error when updating respondent age",
-			"err", err,
-			"respondent", respondent)
-		return err
-	} else if result != nil {
-		log.Logger.Infof("Updated respondent %d", respondent.Id)
-	}
-	return err
 }

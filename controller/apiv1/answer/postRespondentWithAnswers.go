@@ -54,7 +54,7 @@ func PostRespondentWithAnswers(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 					code = apiv1.StatusFail(err.Error())
 					return code, nil
 				}
-			}
+			}			
 		}
 	}
 
@@ -62,19 +62,18 @@ func PostRespondentWithAnswers(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 }
 
 type paramPostRespondentWithAnswers struct {
-	Age                    string    `json:"age"`
-	Gender                 string    `json:"gender"`
-	Education              string    `json:"education"`
-	DurationOfSgpResidence string    `json:"durationOfSgpResidence"`
-	CountryOfBirth         string    `json:"countryOfBirth"`
-	CountryOfResidence     string    `json:"countryOfResidence"`
-	Ethnicity              string    `json:"ethnicity"`
-	IsNative               string    `json:"isNative"`
-	LanguagesSpoken        []string  `json:"languagesSpoken"`
-	StartTime              time.Time `json:"startTime"`
-	EndTime                time.Time `json:"endTime"`
-	UUID                   string    `json:"uuid"`
-	Answers                []struct {
+	Age                int       `json:"age"`
+	Gender             string    `json:"gender"`
+	Education          string    `json:"education"`
+	CountryOfBirth     string    `json:"countryOfBirth"`
+	CountryOfResidence string    `json:"countryOfResidence"`
+	Ethnicity          string    `json:"ethnicity"`
+	IsNative           string    `json:"isNative"`
+	LanguagesSpoken    []string  `json:"languagesSpoken"`
+	StartTime          time.Time `json:"startTime"`
+	EndTime            time.Time `json:"endTime"`
+	UUID               string    `json:"uuid"`
+	Answers            []struct {
 		Question struct {
 			Id   int64  `json:"id"`
 			Word string `json:"word"`
@@ -88,18 +87,17 @@ type paramPostRespondentWithAnswers struct {
 // Transform body parameter to respondent and answers as data model in db
 func (rb *paramPostRespondentWithAnswers) ToModels() (*model.Respondent, []model.Answer) {
 	r := &model.Respondent{
-		Age:                    rb.Age,
-		Gender:                 rb.Gender,
-		Education:              rb.Education,
-		DurationOfSgpResidence: rb.DurationOfSgpResidence,
-		CountryOfBirth:         rb.CountryOfBirth,
-		CountryOfResidence:     rb.CountryOfResidence,
-		Ethnicity:              rb.Ethnicity,
-		IsNative:               rb.IsNative,
-		LanguagesSpoken:        fmt.Sprintf("%+q", rb.LanguagesSpoken),
-		StartTime:              rb.StartTime,
-		EndTime:                rb.EndTime,
-		UUID:                   rb.UUID,
+		Age:                rb.Age,
+		Gender:             rb.Gender,
+		Education:          rb.Education,
+		CountryOfBirth:     rb.CountryOfBirth,
+		CountryOfResidence: rb.CountryOfResidence,
+		Ethnicity:          rb.Ethnicity,
+		IsNative:           rb.IsNative,
+		LanguagesSpoken:    fmt.Sprintf("%+q", rb.LanguagesSpoken),
+		StartTime:          rb.StartTime,
+		EndTime:            rb.EndTime,
+		UUID:               rb.UUID,
 	}
 	answers := make([]model.Answer, len(rb.Answers))
 	for i, answer := range rb.Answers {
