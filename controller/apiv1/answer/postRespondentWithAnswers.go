@@ -62,7 +62,7 @@ func PostRespondentWithAnswers(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 }
 
 type paramPostRespondentWithAnswers struct {
-	Age                string    `json:"age"`
+	Age                int       `json:"age"`
 	Gender             string    `json:"gender"`
 	Education          string    `json:"education"`
 	CountryOfBirth     string    `json:"countryOfBirth"`
