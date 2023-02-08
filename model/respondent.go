@@ -6,7 +6,7 @@ import (
 
 type Respondent struct {
 	Id                 int64     `json:"id" db:"id"`
-	Age                string    `json:"age" db:"age"`
+	Age                int       `json:"age" db:"age"`
 	Gender             string    `json:"gender" db:"gender"`
 	Education          string    `json:"education" db:"education"`
 	CountryOfBirth     string    `json:"countryOfBirth" db:"country_of_birth"`

@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS `community_map`;
 CREATE TABLE IF NOT EXISTS `respondent` (
 --   name                   type            constraints
     `id`                    INT             NOT NULL    AUTO_INCREMENT,
-    `age`                   VARCHAR(256)    NOT NULL,
+    `age`                   INT             NOT NULL,
     `gender`                VARCHAR(10)     NOT NULL,
     `education`             VARCHAR(256)    NOT NULL,
 
