@@ -39,29 +39,31 @@ func PostRespondent(c *gin.Context) (apiv1.HttpStatus, interface{}) {
 }
 
 type postRespondentBody struct {
-	Age                int       `json:"age" db:"age"`
-	Gender             string    `json:"gender" db:"gender"`
-	Education          string    `json:"education" db:"education"`
-	CountryOfBirth     string    `json:"countryOfBirth" db:"country_of_birth"`
-	CountryOfResidence string    `json:"countryOfResidence" db:"country_of_residence"`
-	Ethnicity          string    `json:"ethnicity" db:"ethnicity"`
-	IsNative           string    `json:"isNative" db:"is_native"`
-	LanguagesSpoken    []string  `json:"languagesSpoken" db:"language_spoken"`
-	StartTime          time.Time `json:"startTime" db:"start_time"`
-	EndTime            time.Time `json:"endTime" db:"end_time"`
+	Age                    string    `json:"age" db:"age"`
+	Gender                 string    `json:"gender" db:"gender"`
+	Education              string    `json:"education" db:"education"`
+	DurationOfSgpResidence string    `json:"durationOfSgpResidence" db:"duration_of_sgp_residence"`
+	CountryOfBirth         string    `json:"countryOfBirth" db:"country_of_birth"`
+	CountryOfResidence     string    `json:"countryOfResidence" db:"country_of_residence"`
+	Ethnicity              string    `json:"ethnicity" db:"ethnicity"`
+	IsNative               string    `json:"isNative" db:"is_native"`
+	LanguagesSpoken        []string  `json:"languagesSpoken" db:"language_spoken"`
+	StartTime              time.Time `json:"startTime" db:"start_time"`
+	EndTime                time.Time `json:"endTime" db:"end_time"`
 }
 
 func (rb *postRespondentBody) ToRespondent() *model.Respondent {
 	return &model.Respondent{
-		Age:                rb.Age,
-		Gender:             rb.Gender,
-		Education:          rb.Education,
-		CountryOfBirth:     rb.CountryOfBirth,
-		CountryOfResidence: rb.CountryOfResidence,
-		Ethnicity:          rb.Ethnicity,
-		IsNative:           rb.IsNative,
-		LanguagesSpoken:    fmt.Sprintf("%+q", rb.LanguagesSpoken),
-		StartTime:          rb.StartTime,
-		EndTime:            rb.EndTime,
+		Age:                    rb.Age,
+		Gender:                 rb.Gender,
+		Education:              rb.Education,
+		DurationOfSgpResidence: rb.DurationOfSgpResidence,
+		CountryOfBirth:         rb.CountryOfBirth,
+		CountryOfResidence:     rb.CountryOfResidence,
+		Ethnicity:              rb.Ethnicity,
+		IsNative:               rb.IsNative,
+		LanguagesSpoken:        fmt.Sprintf("%+q", rb.LanguagesSpoken),
+		StartTime:              rb.StartTime,
+		EndTime:                rb.EndTime,
 	}
 }
