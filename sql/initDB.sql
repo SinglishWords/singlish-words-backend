@@ -14,19 +14,19 @@ DROP TABLE IF EXISTS `community_map`;
 
 CREATE TABLE IF NOT EXISTS `respondent` (
 --   name                   type            constraints
-    `id`                        INT             NOT NULL    AUTO_INCREMENT,
-    `age`                       VARCHAR(256)    NOT NULL,
-    `gender`                    VARCHAR(10)     NOT NULL,
-    `education`                 VARCHAR(256)    NOT NULL,
-    `duration_of_sgp_residence` VARCHAR(256)    NOT NULL,
-    `country_of_birth`          VARCHAR(256),
-    `country_of_residence`      VARCHAR(256),
-    `ethnicity`                 VARCHAR(256),
-    `uuid`                      VARCHAR(64),
-    `is_native`                 VARCHAR(5),
-    `language_spoken`           TEXT,
-    `start_time`                DATETIME,
-    `end_time`                  DATETIME,
+    `id`                    INT             NOT NULL    AUTO_INCREMENT,
+    `age`                   INT             NOT NULL,
+    `gender`                VARCHAR(10)     NOT NULL,
+    `education`             VARCHAR(256)    NOT NULL,
+
+    `country_of_birth`      VARCHAR(256) ,
+    `country_of_residence`  VARCHAR(256) ,
+    `ethnicity`             VARCHAR(256) ,
+    `uuid`                  VARCHAR(64) ,
+    `is_native`             VARCHAR(5)     ,
+    `language_spoken`       TEXT,
+    `start_time`            DATETIME        ,
+    `end_time`              DATETIME        ,
 
     PRIMARY KEY (`id`)
 ) CHARSET=utf8;
