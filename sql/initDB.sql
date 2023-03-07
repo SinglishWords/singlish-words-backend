@@ -54,14 +54,15 @@ CREATE TABLE IF NOT EXISTS `question` (
 
 CREATE TABLE IF NOT EXISTS `answer` (
 --   name           type             constraints
-    `id`            INT             NOT NULL    AUTO_INCREMENT,
+    `id`                    INT             NOT NULL    AUTO_INCREMENT,
 
-    `association1`  TEXT            NOT NULL,
-    `association2`  TEXT            NOT NULL,
-    `association3`  TEXT            NOT NULL,
-    `time_spend`    INT             NOT NULL,
-    `question_id`   INT             NOT NULL,
-    `respondent_id` INT             NOT NULL,
+    `association1`          TEXT            NOT NULL,
+    `association2`          TEXT            NOT NULL,
+    `association3`          TEXT            NOT NULL,
+    `is_recognised_word`    INT             NOT NULL,
+    `time_spend`            INT             NOT NULL,
+    `question_id`           INT             NOT NULL,
+    `respondent_id`         INT             NOT NULL,
 
     PRIMARY KEY (`id`),
     FOREIGN KEY (`question_id`)  REFERENCES question(`id`),
