@@ -9,9 +9,9 @@ import (
 const (
 	sqlGetAllAnswers = `SELECT * FROM answer;`
 	sqlInsertAnswer  = `INSERT INTO answer 
-						(association1, association2, association3, time_spend, question_id, respondent_id)
+						(association1, association2, association3, is_recognised_word, time_spend, question_id, respondent_id)
 						VALUES 
-						(:association1, :association2, :association3, :time_spend, :question_id, :respondent_id);`
+						(:association1, :association2, :association3, :is_recognised_word, :time_spend, :question_id, :respondent_id);`
 	sqlUpdateAnswer = `UPDATE answer SET association1=:association1, association2=:association2, association3=:association3 WHERE id=:id;`
 )
 

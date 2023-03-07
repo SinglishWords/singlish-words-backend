@@ -79,8 +79,9 @@ type paramPostRespondentWithAnswers struct {
 			Id   int64  `json:"id"`
 			Word string `json:"word"`
 		} `json:"question"`
-		Responses [3]string `json:"response"`
-		TimeSpend int       `json:"timeOnPage"`
+		IsRecognisedWord bool      `json:"isRecognisedWord"`
+		Responses        [3]string `json:"response"`
+		TimeSpend        int       `json:"timeOnPage"`
 	} `json:"data"`
 }
 
@@ -103,12 +104,17 @@ func (rb *paramPostRespondentWithAnswers) ToModels() (*model.Respondent, []model
 	}
 	answers := make([]model.Answer, len(rb.Answers))
 	for i, answer := range rb.Answers {
+		var isRecognisedWord int64 = 0
+		if answer.IsRecognisedWord {
+			isRecognisedWord = 1
+		}
 		answers[i] = model.Answer{
-			Association1: answer.Responses[0],
-			Association2: answer.Responses[1],
-			Association3: answer.Responses[2],
-			TimeSpend:    time.Duration(answer.TimeSpend),
-			QuestionId:   answer.Question.Id,
+			Association1:     answer.Responses[0],
+			Association2:     answer.Responses[1],
+			Association3:     answer.Responses[2],
+			IsRecognisedWord: isRecognisedWord,
+			TimeSpend:        time.Duration(answer.TimeSpend),
+			QuestionId:       answer.Question.Id,
 		}
 	}
 	return r, answers
