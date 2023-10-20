@@ -72,6 +72,7 @@ Then, delete the existing certificate and private key:
    docker-compose stop nginx
    docker-compose up -d --no-deps nginx
    ```
+   If the changes are not reflected (after step 10), restart all the containers using `docker-compose up -d` instead.
 9. Check that the container does not have any errors
   ```
   docker ps
