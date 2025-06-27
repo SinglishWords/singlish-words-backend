@@ -19,7 +19,8 @@ Then, delete the existing certificate and private key:
 3. Click on "My Certificates"
 4. Under nicknames, click on `singlishwords.nus.edu.sg`
     - If it cannot be found, you will need to go back to the All Certificates Dashboard and look in 'Certificates Expiring within 30 Days', then renew the certificate on NCertRequest before continuing
-5. Click on "Actions", the spanner icon in the top-right-hand corner. Click "Download".
+    - The "Renew" button may not appear under "Actions". If so, you need to remove the installation first as this is an installation to a server which hosted in Cloud or outside NUS. If in doubt, email NUSITnCertRequestSupport@nus.edu.sg for assistance. 
+5. Click on "Actions", the spanner icon in the top-right-hand corner. Click "Download". Be sure that you are downloading the renewed certificate (and not the original one).
 6. On the pop-up dialog box, ensure that the format is PEM (OpenSSL). 
 7. Checkboxes for "Root Chain" and "Private Key" should already have been checked; if they are not, check them. Leave Chain Order as "End Entity First".
 8. The password fields are for you to set a password. Set a password different from other passwords used for the site. 
