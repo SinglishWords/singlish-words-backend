@@ -12,9 +12,30 @@ const (
 	sqlGetAllQuestions = "SELECT * FROM question WHERE enable=1;"
 	sqlUpdateCount     = "UPDATE question SET count=count+1 WHERE id=?;"
 	sqlMaxCount        = "SELECT MAX(count) FROM question"
-	sqlGetWeighed      = "SELECT * FROM question ORDER BY -LOG(RAND()) / count DESC LIMIT ?;"
-	sqlEntries         = "SELECT COUNT(id) FROM questions"
-	sqlGetRandom	   = "SELECT * FROM question ORDER BY RAND() LIMIT 1;"
+	sqlGetWeighed      = `
+		SELECT
+			q.id,
+			q.word,
+			q.enable,
+			q.count,
+			COALESCE(coverage.usable_count, 0) AS usable_count
+		FROM question AS q
+		LEFT JOIN (
+			SELECT
+				question_id,
+				COUNT(DISTINCT respondent_id) AS usable_count
+			FROM answer
+			WHERE is_recognised_word = 1
+				AND (
+					TRIM(COALESCE(association1, '')) <> ''
+					OR TRIM(COALESCE(association2, '')) <> ''
+					OR TRIM(COALESCE(association3, '')) <> ''
+				)
+			GROUP BY question_id
+		) AS coverage ON coverage.question_id = q.id
+		WHERE q.enable = 1;`
+	sqlEntries   = "SELECT COUNT(id) FROM questions"
+	sqlGetRandom = "SELECT * FROM question ORDER BY RAND() LIMIT 1;"
 )
 
 type QuestionDAO struct{}
@@ -107,14 +128,14 @@ func (o QuestionDAO) GetRandom() (*model.Question, error) {
 	return &question, err
 }
 
-func (o QuestionDAO) GetWeightedQuestions(limit int) ([]model.Question, error) {
+func (o QuestionDAO) GetWeightedQuestions(_ int) ([]model.Question, error) {
 	db, err := database.GetMySqlDB()
 	if db == nil {
 		log.Logger.Error("Cannot connect to mysql database.")
 		return nil, notConnectedError{}
 	}
 	var questions []model.Question
-	err = db.Select(&questions, sqlGetWeighed, limit)
+	err = db.Select(&questions, sqlGetWeighed)
 	if err != nil {
 		log.Logger.Warn("Error when select weighted questions", err)
 		return questions, err
