@@ -7,12 +7,17 @@ import (
 	"singlishwords/log"
 	"singlishwords/model"
 	"strings"
+	"sync"
 	"time"
 )
 
 type QuestionCache struct{}
 
 var questionDAO dao.QuestionDAO
+
+// Use one dedicated random source and guard it because HTTP requests may sample concurrently.
+var samplingRNG = rand.New(rand.NewSource(time.Now().UnixNano()))
+var samplingRNGMu sync.Mutex
 
 func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, error) {
 	// questions, err := cache.getNextRangeQuestionsFromRedis(limit)
@@ -30,10 +35,13 @@ func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, err
 		return nil, err
 	}
 
-	for _, s := range questions {
-		err := questionDAO.UpdateCount(&s)
-		if err != nil {
-			log.Logger.Warnf("Error updating count")
+	samplingRNGMu.Lock()
+	selected := sampleQuestions(questions, limit, samplingRNG)
+	samplingRNGMu.Unlock()
+
+	for i := range selected {
+		if err := questionDAO.UpdateCount(&selected[i]); err != nil {
+			log.Logger.Warnw("Error updating question selection count", "questionId", selected[i].Id, "err", err)
 		}
 	}
 
@@ -44,7 +52,7 @@ func (cache QuestionCache) GetNRandomQuestions(limit int) ([]model.Question, err
 	// }
 
 	// return randomPickNQuestions(questions, limit), nil
-	return questions, err
+	return selected, nil
 }
 
 func (QuestionCache) storeAllToRedis(questions []model.Question) error {
